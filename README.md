@@ -1,4 +1,8 @@
 # CSYE 6225 Spring 2018 Starter Repository
+###Team Members:
+Rui
+Tianjiao
+Yi
 ## Assignment2
 ### Objectives
 ### Setup GitHub Repository
