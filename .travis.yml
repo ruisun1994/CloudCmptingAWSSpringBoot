@@ -1,17 +1,16 @@
 language: java
 jdk:
-- oraclejdk8
+- openjdk8
 
 sudo: false
 install: true
 
 script:
-- ./gradlew war
-- ./gradlew build
+  - mvn --settings .travis/settings.xml clean verify
+
 
 notifications:
   username:
     recipients:
-	-sun.rui@husky.neu.edu
 	-xue.ti@husky.neu.edu
-	-chai.yi@husky.neu.edu
+	
