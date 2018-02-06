@@ -6,6 +6,7 @@ sudo: false
 install: true
 
 script:
+  - cd /webapp/CloudCmpting
   - mvn clean install
 
 notifications:
