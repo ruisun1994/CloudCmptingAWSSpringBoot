@@ -1,6 +1,6 @@
 language: java
 jdk:
-- openjdk8
+   - openjdk8
 
 sudo: false
 install: true
@@ -8,9 +8,7 @@ install: true
 script:
   - mvn --settings .travis/settings.xml clean verify
 
-
 notifications:
-  username:
+  email:
     recipients:
-	-xue.ti@husky.neu.edu
-	
+    - xue.ti@husky.neu.edu
