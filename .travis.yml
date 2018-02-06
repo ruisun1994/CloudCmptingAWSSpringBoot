@@ -6,7 +6,7 @@ sudo: false
 install: true
 
 script:
-  - mvn clean verify
+  - mvn
 
 notifications:
   email:
