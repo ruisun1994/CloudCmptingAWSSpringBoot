@@ -6,7 +6,7 @@ sudo: false
 install: true
 
 script:
-  - mvn --settings .travis/settings.xml clean verify
+  - mvn clean verify
 
 notifications:
   email:
