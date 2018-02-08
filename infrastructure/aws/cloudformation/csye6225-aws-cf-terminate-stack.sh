@@ -1,7 +1,17 @@
 #!/bin/bash
 
-echo "Enter The Stack Name:"
+echo "Enter The Stack Name"
 read stackname
 
-aws cloudformation delete-stack --stack-name ${stackname}&&
+echo
+echo "-------Test if the Stack existed:"
+stack_Id=$(aws cloudformation describe-stacks --stack-name "$stackname-csye6225-stack" --query 'Stacks[0].StackId' --output text)
+echo $stack_Id
+if 
+	[ "$stack_Id" == null ]; then
+	echo "No Stack Found, create firstly"
+	exit 0
+fi
+
+aws cloudformation delete-stack --stack-name "$stackname-csye6225-stack"&&
 echo done

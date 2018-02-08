@@ -94,5 +94,5 @@ fi
 
 
 echo
-echo "-------Delete Successfully:"
+echo "-------The EC2 you have selected has been Delete Successfully:"
 

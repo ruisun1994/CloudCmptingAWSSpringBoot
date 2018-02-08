@@ -7,7 +7,21 @@ read stackname
 
 echo "You enter name is"
 echo $stackname
-echo "Create in 2 second" 
+
+
+instanceName=$(aws ec2 describe-instances --filter Name=tag:Name,Values="$stackname-csye6225-Instance" --query 'Reservations[0]')
+echo $instanceName
+#check if already have an instance
+if 
+	[ "$instanceName" != null ]; then
+	echo
+	echo "Same instance existed, Terminated it firstly!"
+	exit 0
+else
+	echo "You enter name is"
+	echo $stackname
+	echo "Create in 2 second" 
+fi
 
 sleep 2
 
@@ -27,7 +41,7 @@ destinationCidrBlock="0.0.0.0/0"
 
 
 echo
-echo "--------Creating VPC-------------"
+echo "--------Creating VPC:"
 #create vpc with cidr block /16
 aws_response=$(aws ec2 create-vpc --cidr-block "$vpcCidrBlock") &&
 #vpcId=$(echo "$aws_response" | sed -n 's/.*"VpcId": "\(.*\)",/\1/p')
@@ -41,12 +55,12 @@ aws ec2 create-tags --resources "$vpcId" --tags Key=Name,Value=$vpcName&&
 
 
 echo
-echo "--------Createing Two subnets------"
+echo "--------Createing Two subnets:"
 aws ec2 create-subnet --vpc-id "$vpcId" --cidr-block "$subNetCidrBlock1"&&
 aws ec2 create-subnet --vpc-id "$vpcId" --cidr-block "$subNetCidrBlock2"&&
 
 echo
-echo "--------Creating Internet Gatewy-------------"
+echo "--------Creating Internet Gateway:"
 gateway_response=$(aws ec2 create-internet-gateway)&&
 gatewayId=$(echo -e "$gateway_response" | /usr/bin/jq '.InternetGateway.InternetGatewayId' | tr -d '"') &&
 if [ -z "$gatewayId" ];then 
@@ -55,15 +69,15 @@ else echo "Create Successful"
 fi
 
 echo
-echo "--------Renaming Internet Gateway-------------"
+echo "--------Renaming Internet Gateway:"
 aws ec2 create-tags --resources "$gatewayId" --tags Key=Name,Value=$gatewayName&&
 
 echo
-echo "--------Attaching gateway to vpc------------"
+echo "--------Attaching gateway to vpc:"
 aws ec2 attach-internet-gateway --vpc-id "$vpcId" --internet-gateway-id "$gatewayId"&&
 
 echo
-echo "--------Creating route table for vpc-----------"
+echo "--------Creating route table for vpc:"
 route_table_response=$(aws ec2 create-route-table --vpc-id "$vpcId")&&
 routeTableId=$(echo -e "$route_table_response" | /usr/bin/jq '.RouteTable.RouteTableId' | tr -d '"')&&
 if [ -z "$routeTableId" ];then 
@@ -72,11 +86,11 @@ else echo "Create Successful"
 fi
 
 echo
-echo "--------Renaming Route Table--------------"
+echo "--------Renaming Route Table:"
 aws ec2 create-tags --resources "$routeTableId" --tags Key=Name,Value=$routeTableName&&
 
 echo
-echo "--------Adding Route for the internet gateway-------"
+echo "--------Adding Route for the internet gateway:"
 route_response=$(aws ec2 create-route --route-table-id "$routeTableId" --destination-cidr-block "$destinationCidrBlock" --gateway-id "$gatewayId")&&
 if [ -z "$route_response" ];then 
 	echo "Not Successful"
@@ -84,7 +98,7 @@ else echo "Create Successful"
 fi
 
 echo
-echo "--------Confirm your route whether active-------------"
+echo "--------Confirm your route whether active:"
 isActive_response=$(aws ec2 describe-route-tables --route-table-id "$routeTableId")&&
 if [ -z "$isActive_response" ];then 
 	echo "Not Successful"
@@ -93,18 +107,18 @@ fi
 
 
 echo
-echo "---------Associate Route Table with Subnet in VPC-----------"
+echo "--------Associate Route Table with Subnet in VPC:"
 SubnetInfo=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values='$vpcId'")&&
 subnetId1=$(echo -e "$SubnetInfo" | /usr/bin/jq '.Subnets[0].SubnetId' | tr -d '"')&&
 subnetId2=$(echo -e "$SubnetInfo" | /usr/bin/jq '.Subnets[1].SubnetId' | tr -d '"')&&
 
 echo
-echo "---------Deal with two Subnets-----------"
+echo "--------Deal with two Subnets:"
 aws ec2 associate-route-table  --subnet-id "$subnetId1" --route-table-id "$routeTableId"&&
 aws ec2 modify-subnet-attribute --subnet-id "$subnetId1" --map-public-ip-on-launch&&
 
 echo
-echo "---------Launch the instance with public subnet----"
+echo "---------Launch the instance with public subnet:"
 aws ec2 create-key-pair --key-name "$keyName" --query 'KeyMaterial' --output text > "$keyName".pem&&
 chmod 400 "$keyName".pem&&
 createGroupResponse=$(aws ec2 create-security-group --group-name SSHAccess --description "Security group for SSH access" --vpc-id "$vpcId")&&
@@ -120,7 +134,7 @@ aws ec2 create-tags --resources "$instanceId" --tags Key=Name,Value=$instanceNam
 # echo $instanceStatus
 
 echo
-echo "-----------Writing JSON file-------"
+echo "-----------Writing JSON file:"
 cat >./"$jsonFileName".json <<EOF
 {
 	"instanceId": "$instanceId",
@@ -134,5 +148,5 @@ cat >./"$jsonFileName".json <<EOF
 EOF
 
 echo
-echo "-----------Success!!!---------------"
+echo "-----------Success!!!:"
 
