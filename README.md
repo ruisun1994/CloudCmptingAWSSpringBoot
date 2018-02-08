@@ -43,11 +43,13 @@ b.	Prerequisite for building and deploying application locally
 3)	You can use IntelliJ as IDE as you want.
 
 
+
 c.	Build and deploy for application
 
 1)	Our application is written in Java based on Spring Boot framework. 
 
 2)	We use Persistent database (MySQL) connected by Hibernate
+
 
 
 
@@ -58,8 +60,12 @@ We use Apache JMeter to do load test
 Junit to unit test
 
 
+
 e.	TravisCI build for the project
 
 add .yml file 
+
+
+
 
 
