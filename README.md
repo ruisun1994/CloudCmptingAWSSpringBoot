@@ -3,7 +3,7 @@
 Rui
 Tianjiao
 Yi
-## Assignment2
+
 ### Objectives
 ### Setup GitHub Repository
 Create a GitHub repository for assignments. This must be a private repository that only your team, TAs and instructor can access.
@@ -53,7 +53,6 @@ c.	Build and deploy for application
 
 
 
-
 d.	Unit, integration and load test
 
 We use Apache JMeter to do load test
@@ -63,5 +62,10 @@ Junit to unit test
 
 
 e.	TravisCI build for the project
+
+add .yml file 
+
+
+
 
 
