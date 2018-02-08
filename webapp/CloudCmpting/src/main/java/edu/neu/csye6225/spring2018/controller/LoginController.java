@@ -2,7 +2,7 @@ package edu.neu.csye6225.spring2018.controller;
 
 
 import edu.neu.csye6225.spring2018.WebSecurityConfig;
-import edu.neu.csye6225.spring2018.dao.UserDao;
+import edu.neu.csye6225.spring2018.dao.UserRepository;
 import edu.neu.csye6225.spring2018.entity.User;
 import edu.neu.csye6225.spring2018.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class LoginController {
     @Autowired
     private UserService userService;
     @Autowired
-    private UserDao userDao;
+    private UserRepository userRepository;
 
 
     //checkAccount
@@ -36,7 +36,7 @@ public class LoginController {
                 .withMatcher("password", ExampleMatcher.GenericPropertyMatchers.startsWith())
                 .withIgnorePaths("id");
         Example<User> userExample = Example.of(user, matcher);
-        List<User> userList = userDao.findAll(userExample);
+        List<User> userList = userRepository.findAll(userExample);
         if(!userList.isEmpty()) return true;
         else return false;
     }
