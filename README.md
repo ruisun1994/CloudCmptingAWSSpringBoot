@@ -3,7 +3,7 @@
 Rui
 Tianjiao
 Yi
-## Assignment2
+
 ### Objectives
 ### Setup GitHub Repository
 Create a GitHub repository for assignments. This must be a private repository that only your team, TAs and instructor can access.
