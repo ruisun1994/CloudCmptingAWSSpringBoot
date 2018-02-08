@@ -1,4 +1,5 @@
 # CSYE 6225 Spring 2018 Starter Repository
+
 #### Team Members:
 ````
 Rui Sun rui.sun@northeastern.edu
@@ -29,3 +30,8 @@ Junit to unit test
 ````
 add .yml file
 ````
+
+###Team Members:
+Rui
+Tianjiao
+Yi
