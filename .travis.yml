@@ -12,6 +12,6 @@ script:
 notifications:
   email:
     recipients:
-    -sun.rui@husky.neu.edu
-    -xue.ti@husky.neu.edu
-    -chai.yi@husky.neu.edu
+      -sun.rui@husky.neu.edu
+      -xue.ti@husky.neu.edu
+      -chai.yi@husky.neu.edu
