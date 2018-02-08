@@ -114,6 +114,7 @@ aws ec2 authorize-security-group-ingress --group-id "$groupId" --protocol tcp --
 
 runnningInformation=$(aws ec2 run-instances --image-id ami-a4827dc9 --count 1 --instance-type t2.micro --key-name "$keyName" --security-group-ids "$groupId" --subnet-id "$subnetId1")&&
 instanceId=$(echo -e "$runnningInformation" | /usr/bin/jq '.Instances[0].InstanceId' | tr -d '"')&&
+echo $instanceId
 aws ec2 create-tags --resources "$instanceId" --tags Key=Name,Value=$instanceName&&
 
 # instanceStatus=$(aws ec2 describe-instances --instance-id "$instanceId" --query 'Reservations[0].Instances[0].State.Name' --output text)
