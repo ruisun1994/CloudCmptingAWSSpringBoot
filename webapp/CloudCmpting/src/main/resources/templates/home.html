@@ -6,12 +6,38 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
 <title>Register</title>
+<script type="text/javascript">
+    function clock(){
+        var nowtime = new Date();
+        var flag="AM";
+        var hours=nowtime.getHours();
+        if(hours>12){
+            hours-=12;
+            flag="PM";
+        }
+        hours=hours>9?hours:"0"+hours;
+        var minutes=nowtime.getMinutes();
+        minutes=minutes>9?minutes:"0"+minutes;
+        var seconds=nowtime.getSeconds();
+        seconds=seconds>9?seconds:"0"+seconds;
+        var disptime=hours+":"+minutes+":"+seconds+" "+flag;
+        document.getElementById("clock").innerHTML=disptime;
+        setTimeout("clock()",1000);
+    }
+</script>
 <body>
 
 <p id="demo"></p>
 <div class="container" style="text-align: center; margin-top: 5%">
     <h2>
         <span th:text="${ message }"></span>
+    </h2>
+    <h2>--------------------------------</h2>
+    <h2>Current Time:
+        <div id="clock"></div>
+        <script type="text/javascript">
+            clock();
+        </script>
     </h2>
     <button th:type="button" class="btn btn-link"><a href="/user/index">Logout</a></button>
 </div>
