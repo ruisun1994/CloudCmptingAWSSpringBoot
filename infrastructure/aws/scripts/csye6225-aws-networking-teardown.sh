@@ -34,21 +34,6 @@ gatewayId=$(/usr/bin/jq '.gatewayId' "$jsonFileName" | tr -d '"')
 vpcId=$(/usr/bin/jq '.vpcId' "$jsonFileName" | tr -d '"')
 keyName="$stackname-key"
 
-echo
-echo "-------Delete EC2 Instance KeyPair:"
-aws ec2 delete-key-pair --key-name "$keyName"&&
-
-echo
-echo "-------Terminate Instance:"
-# TerminatingInstancesInfo = $(aws ec2 terminate-instances --instance-ids "$instanceId")
-instanceStateCode=$(aws ec2 terminate-instances --instance-ids "$instanceId" --query "TerminatingInstances[0].CurrentState.Code")&&
-
-while [ $instanceStateCode -ne 48  ]; do
-    echo "Status Code is "
-    echo $instanceStateCode
-    echo "Wait Instance from Shutting down to Terminated Status"
-    sleep 10
-    instanceStateCode=$(aws ec2 terminate-instances --instance-ids "$instanceId" --query "TerminatingInstances[0].CurrentState.Code")
 done
 
 echo $instanceStateCode&&
@@ -90,6 +75,3 @@ fi
 if [ -e "$jsonFileName" ]; then
 	rm -rf "$jsonFileName"
 fi
-
-echo
-echo "-------Delete networking resources sucessfully!"
