@@ -43,4 +43,3 @@ echo $SUBNET_ID
 echo "-------Start to build the cloudformation:"
 aws cloudformation create-stack --stack-name "$stackname-csye6225-stack" --template-body file://csye6225-cf-networking.json --parameters ParameterKey=ParamSubnetID,ParameterValue=$SUBNET_ID ParameterKey=ParamKeyName,ParameterValue=$KEY_NAME ParameterKey=ParamVpcID,ParameterValue=$VPC_ID&&
 
-echo done

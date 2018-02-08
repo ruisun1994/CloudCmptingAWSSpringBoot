@@ -34,26 +34,10 @@ gatewayId=$(/usr/bin/jq '.gatewayId' "$jsonFileName" | tr -d '"')
 vpcId=$(/usr/bin/jq '.vpcId' "$jsonFileName" | tr -d '"')
 keyName="$stackname-key"
 
-
-echo
-echo "-------Terminate Instance:"
-instanceStateCode=$(aws ec2 terminate-instances --instance-ids "$instanceId" --query "TerminatingInstances[0].CurrentState.Code" --output text)&&
-
-
-while [ "$instanceStateCode" != 48  ]; do
-	echo "Status Code is "
-	echo $instanceStateCode
-	echo "Wait Instance from Shutting down to Terminated Status"
-	sleep 10
-	instanceStateCode=$(aws ec2 terminate-instances --instance-ids "$instanceId" --query "TerminatingInstances[0].CurrentState.Code" --output text)
 done
 
 echo $instanceStateCode&&
 echo "Ready to continue to the next work"
-
-echo
-echo "-------Delete EC2 Instance KeyPair:"
-aws ec2 delete-key-pair --key-name "$keyName"&&
 
 echo
 echo "-------Delete your security group:"
@@ -91,8 +75,3 @@ fi
 if [ -e "$jsonFileName" ]; then
 	rm -rf "$jsonFileName"
 fi
-
-
-echo
-echo "-------The EC2 you have selected has been Delete Successfully:"
-

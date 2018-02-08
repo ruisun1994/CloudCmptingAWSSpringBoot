@@ -14,4 +14,3 @@ if
 fi
 
 aws cloudformation delete-stack --stack-name "$stackname-csye6225-stack"&&
-echo done
