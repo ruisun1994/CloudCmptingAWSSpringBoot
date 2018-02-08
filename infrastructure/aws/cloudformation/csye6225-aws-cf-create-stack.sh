@@ -23,14 +23,12 @@ VPC_ID=$(echo $VPC_ID0 | tr -d \")
 
 echo
 echo "-------Test if the Stack existed:"
-stack_Id=$(aws cloudformation describe-stacks --stack-name "$stackname-csye6225-stack" --query 'Stacks[0].StackId' --output text)
-if 
-	echo $stack_Id
-	[ "$stack_Id" != null ]; then
+stack_Id=$(aws cloudformation describe-stacks --stack-name "$stackname-csye6225-stack" --query 'Stacks[0].StackId') 
+if
+	[ $? -eq 0 ]; then
 	echo "Stack Already existed, terminated it first!"
 	exit 0
 fi
-
 
 echo
 echo "create stack named $stackname-csye6225-stack in 2 second"
