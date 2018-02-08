@@ -1,0 +1,73 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Sample CloudFormation Template for CSYE 6225 - Spring 2018",
+    "Resources": {
+        "EC2Instance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": "ami-cd0f5cb6",
+                "InstanceType": "t2.micro",
+                "SecurityGroupIds": [
+                    {
+                        "Fn::GetAtt": [
+                            "WebServerSecurityGroup",
+                            "GroupId"
+                        ]
+                    }
+                ],
+                "KeyName": {"Ref":"ParamKeyName"},
+                "SubnetId": {"Ref":"ParamSubnetID"}
+            }
+        },    
+
+        "WebServerSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupName":"csye6225-Spring2018-aws",
+                "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22, HTTPS access via port 443",
+                "VpcId":{"Ref":"ParamVpcID"},
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "80",
+                        "ToPort": "80",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "22",
+                        "ToPort": "22",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "443",
+                        "ToPort": "443",
+                        "CidrIp": "0.0.0.0/0"
+                    }
+                ]
+            }
+        }
+    },
+     "Parameters" : {
+
+       "ParamVpcID" : {
+
+            "Type" : "String"
+
+       },
+
+       "ParamKeyName" : {
+
+            "Type" : "String"
+
+       },
+
+       "ParamSubnetID" : {
+
+            "Type" : "String"
+
+       }
+
+   }
+}
