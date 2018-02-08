@@ -1,7 +1,7 @@
 package edu.neu.csye6225.spring2018.controller;
 
 import edu.neu.csye6225.spring2018.WebSecurityConfig;
-import edu.neu.csye6225.spring2018.dao.UserDao;
+import edu.neu.csye6225.spring2018.dao.UserRepository;
 import edu.neu.csye6225.spring2018.entity.User;
 import edu.neu.csye6225.spring2018.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class IndexController {
     @Autowired
-    private UserDao userDao;
+    private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
@@ -67,7 +67,7 @@ public class IndexController {
         String password = request.getParameter("pwd1");
         String password2 = request.getParameter("pwd2");;
 
-//        System.out.println(userDao.existsByEmail(email));
+//        System.out.println(userRepository.existsByEmail(email));
         if(userService.existsByEmail(email)) {
             errmsg = "This email address have been registered";
             model.put("errmsg", this.errmsg);
