@@ -24,3 +24,42 @@ As a user, when I want to navigate to home page (/) and I am not logged in, I sh
 As a user, if I try to create an account and it already exists, system should warn me that account already exists.
 As a user, I expect my password to be stored securely using BCrypt password hashing scheme with salt.
 As a user, I expect the code quality of the application to be maintained to highest standards using unit and/or integration tests.
+
+
+a.	Team member
+
+Rui Sun   rui.sun@northeastern.edu
+
+Yi Chai   chai.yi@northeastern.edu
+
+Tianjiao Xue   xue.ti@northeastern.edu
+
+b.	Prerequisite for building and deploying application locally
+
+1)	Our local application is built on Ubuntu 16.04 LTS. Please make sure if you run it on virtual machine which enough RAM (4GB), CPU (1-2) and disk(50GB).
+
+2)	Please install Java 8, MySQL on your Ubuntu development virtual machine.
+
+3)	You can use IntelliJ as IDE as you want.
+
+
+c.	Build and deploy for application
+
+1)	Our application is written in Java based on Spring Boot framework. 
+
+2)	We use Persistent database (MySQL) connected by Hibernate
+
+
+
+d.	Unit, integration and load test
+
+We use Apache JMeter to do load test
+
+Junit to unit test
+
+
+e.	TravisCI build for the project
+
+add .yml file 
+
+
