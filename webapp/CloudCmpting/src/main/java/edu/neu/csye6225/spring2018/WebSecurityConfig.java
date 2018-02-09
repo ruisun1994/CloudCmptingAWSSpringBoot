@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
             }
 
 //            跳转到登录页
-            String url = "/user/index";
+            String url = "/user/firstPage";
             response.sendRedirect(url);
             return false;
         }
