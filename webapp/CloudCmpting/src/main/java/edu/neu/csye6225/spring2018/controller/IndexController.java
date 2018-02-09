@@ -1,6 +1,5 @@
 package edu.neu.csye6225.spring2018.controller;
 
-import edu.neu.csye6225.spring2018.WebSecurityConfig;
 import edu.neu.csye6225.spring2018.dao.UserRepository;
 import edu.neu.csye6225.spring2018.entity.User;
 import edu.neu.csye6225.spring2018.service.UserService;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+import java.util.Date;
 
 @Controller
 @RequestMapping("/user/*")
@@ -25,20 +25,24 @@ public class IndexController {
     @Autowired
     private UserService userService;
 
-//    private LoginService loginService;
-
-    //index page
-    @GetMapping("/user/")
-    public String index(@SessionAttribute(WebSecurityConfig.SESSION_KEY)String account, Model model){
-        return "index";
-    }
-
+    @Autowired
     private String message = "";
+    @Autowired
     private String errmsg = "";
 
     //index page
     @RequestMapping("/index")
-    public String index() {
+    public String index(HttpSession session,Map<String, Object> model) {
+        Object obj=session.getAttribute("user");
+        if(obj instanceof User){
+            User u =(User) obj;
+            //session.setAttribute(WebSecurityConfig.SESSION_KEY, email);
+            Date date = new Date();
+            message = "Hi, " + u.getEmail() + " The time is: " + date.toString();
+            model.put("message", message);
+            return "home";
+        }
+
         return "index";
     }
 
@@ -93,7 +97,6 @@ public class IndexController {
     //logout function
     @GetMapping("/logout")
     public String logout(HttpSession session){
-        session.removeAttribute(WebSecurityConfig.SESSION_KEY);
         return "login";
     }
 }
