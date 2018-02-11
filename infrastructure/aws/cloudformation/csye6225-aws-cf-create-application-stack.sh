@@ -7,14 +7,14 @@ echo
 echo "-------Test if the Stack existed:"
 stack_Id=$(aws cloudformation describe-stacks --stack-name "$stackname" --query 'Stacks[0].StackId' --output text)
 echo $stack_Id
-if 
+if
 	[ "$stack_Id" != "" ]; then
 	echo "Stack has already existed, terminate first!"
 	exit 0
 fi
 
 echo "-------Start to build the cloudformation:"
-aws cloudformation create-stack --stack-name $stackname --template-body file://csye6225-cf-networking.json
+aws cloudformation create-stack --stack-name $stackname --template-body file://csye6225-cf-application.json
 
 echo "-------Check if the cloudformation has been done sucessfully!"
 stackStatus=$(aws cloudformation describe-stacks --stack-name $stackname --query 'Stacks[0].StackStatus' --output text)

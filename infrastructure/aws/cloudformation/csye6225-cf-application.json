@@ -67,7 +67,13 @@
         "DestinationCidrBlock" : "0.0.0.0/0",
         "GatewayId" : { "Ref" : "myInternetGateway" }
       }
-    }
+    },
+    "myApplication": {
+      "Type" : "AWS::ElasticBeanstalk::Application",
+      "Properties" : {
+         "ApplicationName" : "SampleAWSElasticBeanstalkApplication",
+         "Description" : "AWS Elastic Beanstalk Java Application"
+      }
   }
 }
-
+}
