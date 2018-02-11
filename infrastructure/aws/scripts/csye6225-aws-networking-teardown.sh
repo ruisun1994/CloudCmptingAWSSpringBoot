@@ -29,6 +29,7 @@ vpcId=$(/usr/bin/jq '.vpcId' "$jsonFileName" | tr -d '"')
 # keyName="$stackname-key"
 
 
+
 # echo
 # echo "-------Terminate Instance:"
 # instanceStateCode=$(aws ec2 terminate-instances --instance-ids "$instanceId" --query "TerminatingInstances[0].CurrentState.Code" --output text)&&
@@ -44,6 +45,7 @@ vpcId=$(/usr/bin/jq '.vpcId' "$jsonFileName" | tr -d '"')
 
 # echo $instanceStateCode&&
 # echo "Ready to continue to the next work"
+
 
 # echo
 # echo "-------Delete EC2 Instance KeyPair:"
@@ -79,6 +81,8 @@ if [ -e "$jsonFileName" ]; then
 	rm -rf "$jsonFileName"
 fi
 
+
 echo
 echo "-------Delete Successfully:"
+
 
