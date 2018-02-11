@@ -1,9 +1,0 @@
-{
-	"instanceId": "i-0634725a20c129213",
-	"groupId": "sg-f37e1a84",
-	"subnetId1": "subnet-a82e6e87",
-	"subnetId2": "subnet-fe2b6bd1",
-	"routeTableId": "rtb-bde8f7c0",
-	"gatewayId": "igw-158d976c",
-	"vpcId": "vpc-44ea193f"
-}
