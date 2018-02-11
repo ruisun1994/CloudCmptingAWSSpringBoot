@@ -34,10 +34,10 @@ done
 
 
 if [ "$stackStatus" == "DELETE_COMPLETE" ]; then
-	echo "stack delete sucessfully!"
+	echo "Stack delete sucessfully!"
 	exit 0
 else
-	echo "failed"
+	echo "Failed"
 	exit 0
 fi
 

@@ -46,18 +46,9 @@ if [ -z "$vpcId" ];then
 else echo "Create Successful"
 fi
 
-echo
-echo "--------Renaming the Vpc:"
-aws ec2 create-tags --resources "$vpcId" --tags Key=Name,Value=$vpcName&&
-
-
-
-# echo
-# echo "--------Createing Two subnets:"
-# aws ec2 create-subnet --vpc-id "$vpcId" --cidr-block "$subNetCidrBlock1"&&
-# aws ec2 create-subnet --vpc-id "$vpcId" --cidr-block "$subNetCidrBlock2"&&
 
 echo
+echo "--------Creating Internet Gateway:"
 gateway_response=$(aws ec2 create-internet-gateway)&&
 gatewayId=$(echo -e "$gateway_response" | /usr/bin/jq '.InternetGateway.InternetGatewayId' | tr -d '"') &&
 if [ -z "$gatewayId" ];then 
@@ -66,6 +57,12 @@ else echo "Create Successful"
 fi
 
 echo
+echo "--------Attaching gateway to vpc:"
+aws ec2 attach-internet-gateway --vpc-id "$vpcId" --internet-gateway-id "$gatewayId"&&
+
+
+echo
+echo "--------Creating RouteTable:"
 route_table_response=$(aws ec2 create-route-table --vpc-id "$vpcId")&&
 routeTableId=$(echo -e "$route_table_response" | /usr/bin/jq '.RouteTable.RouteTableId' | tr -d '"')&&
 if [ -z "$routeTableId" ];then 
@@ -74,11 +71,13 @@ else echo "Create Successful"
 fi
 
 echo
+echo "--------Adding Route for the internet gateway:"
 route_response=$(aws ec2 create-route --route-table-id "$routeTableId" --destination-cidr-block "$destinationCidrBlock" --gateway-id "$gatewayId")&&
 if [ -z "$route_response" ];then 
 	echo "Not Successful"
 else echo "Create Successful"
 fi
+
 
 echo
 isActive_response=$(aws ec2 describe-route-tables --route-table-id "$routeTableId")&&
@@ -86,6 +85,12 @@ if [ -z "$isActive_response" ];then
 	echo "Route is not Active"
 else echo "Route is Active"
 fi
+
+echo
+echo "--------Renaming:"
+aws ec2 create-tags --resources "$vpcId" --tags Key=Name,Value=$vpcName&&
+aws ec2 create-tags --resources "$gatewayId" --tags Key=Name,Value=$gatewayName&&
+aws ec2 create-tags --resources "$routeTableId" --tags Key=Name,Value=$routeTableName&&
 
 
 
