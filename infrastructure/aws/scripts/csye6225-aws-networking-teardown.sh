@@ -27,7 +27,7 @@ routeTableId=$(/usr/bin/jq '.routeTableId' "$jsonFileName" | tr -d '"')
 gatewayId=$(/usr/bin/jq '.gatewayId' "$jsonFileName" | tr -d '"')
 vpcId=$(/usr/bin/jq '.vpcId' "$jsonFileName" | tr -d '"')
 # keyName="$stackname-key"
-
+applicationName=$(/usr/bin/jq '.applicationName' "$jsonFileName" | tr -d '"')
 
 
 # echo
@@ -76,11 +76,13 @@ echo
 echo "-------Delete your VPC:"
 aws ec2 delete-vpc --vpc-id "$vpcId"&&
 
+echo
+echo "-------Delete the Application:"
+aws deploy delete-application --application-name "$applicationName"&&
 
 if [ -e "$jsonFileName" ]; then
 	rm -rf "$jsonFileName"
 fi
 
-
 echo
-echo "-------Delete Successfully:"
+echo "-------Delete Successfully!"

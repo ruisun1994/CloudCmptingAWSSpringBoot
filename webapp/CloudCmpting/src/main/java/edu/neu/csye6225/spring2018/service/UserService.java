@@ -21,8 +21,6 @@ public class UserService {
     User user = new User();
 
     public void save(User user) {
-//        user.setEnabled(true);
-//        user.setPassword(encoder.encode(user.getPassword()));
         String salt = BCrypt.gensalt();
         System.out.println(salt);
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCryptSalt.SALT));
