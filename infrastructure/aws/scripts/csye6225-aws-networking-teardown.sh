@@ -35,6 +35,21 @@ vpcId=$(/usr/bin/jq '.vpcId' "$jsonFileName" | tr -d '"')
 # instanceStateCode=$(aws ec2 terminate-instances --instance-ids "$instanceId" --query "TerminatingInstances[0].CurrentState.Code" --output text)&&
 
 
+
+# while [ "$instanceStateCode" != 48  ]; do
+# 	echo "Status Code is "
+# 	echo $instanceStateCode
+# 	echo "Wait Instance from Shutting down to Terminated Status"
+# 	sleep 10
+# 	instanceStateCode=$(aws ec2 terminate-instances --instance-ids "$instanceId" --query "TerminatingInstances[0].CurrentState.Code" --output text)
+# done
+
+# echo $instanceStateCode&&
+# echo "Ready to continue to the next work"
+
+
+
+
 # while [ "$instanceStateCode" != 48  ]; do
 # 	echo "Status Code is "
 # 	echo $instanceStateCode
@@ -84,3 +99,4 @@ fi
 
 echo
 echo "-------Delete Successfully:"
+

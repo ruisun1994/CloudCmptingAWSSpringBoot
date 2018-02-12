@@ -81,7 +81,8 @@ fi
 
 echo
 isActive_response=$(aws ec2 describe-route-tables --route-table-id "$routeTableId")&&
-if [ -z "$isActive_response" ];then
+
+if [ -z "$isActive_response" ];then 
 	echo "Route is not Active"
 else echo "Route is Active"
 fi
@@ -109,6 +110,29 @@ aws ec2 create-tags --resources "$routeTableId" --tags Key=Name,Value=$routeTabl
 # echo "--------Create Ket pair:"
 # aws ec2 create-key-pair --key-name "$keyName" --query 'KeyMaterial' --output text > "$keyName".pem&&
 # chmod 400 "$keyName".pem&&
+
+
+# echo
+# echo "--------Associate Route Table with Subnet in VPC:"
+# SubnetInfo=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values='$vpcId'")&&
+# subnetId1=$(echo -e "$SubnetInfo" | /usr/bin/jq '.Subnets[0].SubnetId' | tr -d '"')&&
+# subnetId2=$(echo -e "$SubnetInfo" | /usr/bin/jq '.Subnets[1].SubnetId' | tr -d '"')&&
+
+# echo
+# echo "--------Deal with two Subnets:"
+# aws ec2 associate-route-table  --subnet-id "$subnetId1" --route-table-id "$routeTableId"&&
+# aws ec2 modify-subnet-attribute --subnet-id "$subnetId1" --map-public-ip-on-launch&&
+
+
+# echo
+# echo "--------Create Ket pair:"
+# aws ec2 create-key-pair --key-name "$keyName" --query 'KeyMaterial' --output text > "$keyName".pem&&
+# chmod 400 "$keyName".pem&&
+
+
+# createGroupResponse=$(aws ec2 create-security-group --group-name SSHAccess --description "Security group for SSH access" --vpc-id "$vpcId")&&
+# groupId=$(echo -e "$createGroupResponse" | /usr/bin/jq '.GroupId' | tr -d '"')&&
+# aws ec2 authorize-security-group-ingress --group-id "$groupId" --protocol tcp --port 22 --cidr "$destinationCidrBlock"&&
 
 
 # createGroupResponse=$(aws ec2 create-security-group --group-name SSHAccess --description "Security group for SSH access" --vpc-id "$vpcId")&&
