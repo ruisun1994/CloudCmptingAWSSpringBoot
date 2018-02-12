@@ -20,13 +20,13 @@ aws cloudformation delete-stack --stack-name "$stackname"
 sleep 2
 
 
-stackStatus=$(aws cloudformation describe-stacks --stack-name "$stack_Id" --query 'Stacks[0].StackStatus' --output text)
+stackStatus=$(aws cloudformation describe-stacks --stack-name $stack_Id --query 'Stacks[0].StackStatus' --output text)
 echo $stackStatus
-
 
 while [[  "$stackStatus" == "DELETE_IN_PROGRESS" ]]
 do
 stackStatus=$(aws cloudformation describe-stacks --stack-name "$stack_Id" --query 'Stacks[0].StackStatus' --output text)
+
 echo "Please wait a moment!"
 echo  $stackStatus
 sleep 3
@@ -39,5 +39,4 @@ if [ "$stackStatus" == "DELETE_COMPLETE" ]; then
 else
 	echo "Failed"
 	exit 0
-fi
 
