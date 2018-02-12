@@ -14,11 +14,11 @@ if
 fi
 
 echo "-------Start to build the cloudformation:"
-aws cloudformation create-stack --stack-name "$stackname" --template-body file://csye6225-cf-networking.json
+
+aws cloudformation create-stack --stack-name $stackname --template-body file://csye6225-cf-networking.json
 
 echo "-------Check if the cloudformation has been done sucessfully!"
-stackStatus=$(aws cloudformation describe-stacks --stack-name "$stackname" --query 'Stacks[0].StackStatus' --output text)
-#echo $stackStatus
+stackStatus=$(aws cloudformation describe-stacks --stack-name $stackname --query 'Stacks[0].StackStatus' --output text)
 
 while [[ "$stackStatus" != "CREATE_COMPLETE" && "$stackStatus" != "ROLLBACK_COMPLETE" ]]
 do
@@ -35,4 +35,3 @@ if [ "$stackStatus" == "CREATE_COMPLETE" ]; then
 else
 	echo "failed"
 	exit 0
-fi
