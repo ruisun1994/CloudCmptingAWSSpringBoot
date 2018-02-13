@@ -117,8 +117,8 @@ public class IndexController {
     //logout function
     @GetMapping("/logout")
     public String logout(HttpSession session){
-//        session.removeAttribute(WebSecurityConfig.SESSION_KEY);
-        session.invalidate();
+        session.removeAttribute(WebSecurityConfig.SESSION_KEY);
+//        session.invalidate();
         return "firstPage";
     }
 }

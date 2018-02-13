@@ -84,6 +84,8 @@ public class LoginController {
             Date date = new Date();
             message = "Hi, " + email + " The time is: " + date.toString();
             model.put("message", message);
+            model.put("email",email);
+            model.put("password",rawPassword);
             System.out.println(session.getAttribute(SESSION_KEY));
             return "home";
         }
