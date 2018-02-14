@@ -25,7 +25,7 @@ public class IndexController {
     @Autowired
     private UserService userService;
 
-//    private LoginService loginService;
+//  private LoginService loginService;
 
     //index page
     @GetMapping("/user/")
@@ -50,9 +50,13 @@ public class IndexController {
 
     //login page
     @RequestMapping("/login")
-    public String login() {
-        return "login";
-    }
+    public String login() { return "login"; }
+
+    //jump to user list
+    @RequestMapping("/userlist")
+    public String listUser() { return "userlist"; }
+
+
 
 //    @ModelAttribute("user")
 //    public User constructUser() {
@@ -65,7 +69,9 @@ public class IndexController {
     public String register(HttpServletRequest request, Map<String, Object> model) {
         String email = request.getParameter("email");
         String password = request.getParameter("pwd1");
-        String password2 = request.getParameter("pwd2");;
+        String password2 = request.getParameter("pwd2");
+        String username =request.getParameter("username") ;
+
 
 //        System.out.println(userRepository.existsByEmail(email));
         if(userService.existsByEmail(email)) {
@@ -77,6 +83,7 @@ public class IndexController {
             User user = new User();
             user.setEmail(email);
             user.setPassword(password);
+            user.setUsername(username);
             userService.save(user);
             System.out.println(email);
             System.out.println(user.getPassword());
@@ -96,4 +103,15 @@ public class IndexController {
         session.removeAttribute(WebSecurityConfig.SESSION_KEY);
         return "login";
     }
+
+
+    //getAllUsers
+    @GetMapping(path="/userlist")
+    public String getAllUser(Map<String, Object> model) {
+        //model.put("user",userRepository.findAll());
+        return "userlist";
+
+    }
+
+
 }

@@ -33,6 +33,7 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
         addInterceptor.excludePathPatterns("/user/loggedin");
         addInterceptor.excludePathPatterns("/user/login_err");
         addInterceptor.excludePathPatterns("/user/register_err");
+        addInterceptor.excludePathPatterns("/user/userlist");
 
         addInterceptor.addPathPatterns("/**");
     }

@@ -27,8 +27,12 @@ public class UserService {
         System.out.println(salt);
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCryptSalt.SALT));
         user.setEmail(user.getEmail());
+        user.setUsername(user.getUsername());
+        user.setAboutMe(user.getAboutMe());
+        user.setImgPath(user.getImgPath());
         userRepository.save(user);
     }
+
 
 
     public boolean existsByEmail (String email) {

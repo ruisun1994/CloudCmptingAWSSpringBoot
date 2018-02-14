@@ -1,0 +1,73 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Sample CloudFormation Template for CSYE 6225 - Spring 2018",
+  "Mappings" : {
+    "RegionMap": {
+      "us-east-1": {
+        "32": "ami-6411e20d",
+        "64": "ami-7a11e213"
+      }
+    }
+  },
+  "Conditions" : {
+  },
+  "Parameters": {
+  },
+  "Resources": {
+    "myVPC": {
+      "Type" : "AWS::EC2::VPC",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Tags" : [
+      {
+        "Key" : "Name",
+        "Value" : { "Fn::Join" : [ "", [ {"Ref" : "AWS::StackName"}, "-csye6225-vpc" ] ]}
+      }
+    ]
+      }
+    },
+    "myInternetGateway": {
+      "Type" : "AWS::EC2::InternetGateway",
+      "Properties" : {
+        "Tags" : [
+      {
+        "Key" : "Name",
+        "Value" : { "Fn::Join" : [ "", [ {"Ref" :  "AWS::StackName"}, "-csye6225-InternetGateway" ] ]}
+      }
+    ]
+      }
+    },
+    "myAttachGateway" : {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "myVPC"
+        },
+        "InternetGatewayId": {
+          "Ref": "myInternetGateway"
+        }
+      }
+    },
+    "myRouteTable": {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "myVPC" },
+        "Tags" : [
+      {
+        "Key" : "Name",
+        "Value" : { "Fn::Join" : [ "", [ {"Ref" :  "AWS::StackName"}, "-csye6225-public-route-table" ] ]}
+      }
+    ]
+      }
+    },
+    "myRoute": {
+      "Type" : "AWS::EC2::Route",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "myRouteTable" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : { "Ref" : "myInternetGateway" }
+      }
+    }
+  }
+}
+

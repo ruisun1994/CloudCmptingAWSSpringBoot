@@ -13,6 +13,15 @@
     <h2>
         <span th:text="${ message }"></span>
     </h2>
+
+    <img src="$picturePath"/>
+    <form action="/user/home" method="post" name="imageForm" id="uploadImg">
+        <input type="file" name ="file"/>
+        <input type ="submit" value="Upload"/>
+        <input type ="text" name="aboutMe">
+    </form>
+
+
     <button th:type="button" class="btn btn-link"><a href="/user/index">Logout</a></button>
 </div>
 
