@@ -23,7 +23,7 @@ vpcCidrBlock="10.0.0.0/16"
 # subNetCidrBlock1="10.0.0.0/24"
 # subNetCidrBlock2="10.0.1.0/24"
 destinationCidrBlock="0.0.0.0/0"
-
+applicationName="$stackname-csye6225-application"
 
 echo
 echo "--------Check Whether VPC is Existed:"
@@ -148,16 +148,6 @@ aws ec2 create-tags --resources "$routeTableId" --tags Key=Name,Value=$routeTabl
 # "subnetId1": "$subnetId1",
 # "subnetId2": "$subnetId2",
 
-echo
-echo "--------Writing JSON file:"
-cat >./"$jsonFileName".json <<EOF
-{
-	"routeTableId": "$routeTableId",
-	"gatewayId": "$gatewayId",
-	"vpcId": "$vpcId"
-}
-EOF
-
 Vpc_State=$(aws ec2 describe-vpcs --filter Name=tag:Name,Values="$vpcName" --query 'Vpcs[0].State' --output text)
 echo $Vpc_State
 if [ "$Vpc_State" == "available" ]; then
@@ -165,3 +155,26 @@ if [ "$Vpc_State" == "available" ]; then
 else
 	echo "Failed"
 fi
+
+echo
+echo "--------Create Application"
+aws deploy create-application --application-name "$applicationName"
+
+awsAppName=$(aws deploy get-application --application-name "$applicationName" --query 'application.applicationName' --output text)
+if [[ $awsAppName == $applicationName ]]; then
+	#statements
+	echo "--------Create Application Successfully!"
+else
+	echo "--------Failed to Create Application!"
+fi
+
+echo
+echo "--------Writing JSON file:"
+cat >./"$jsonFileName".json <<EOF
+{
+	"routeTableId": "$routeTableId",
+	"gatewayId": "$gatewayId",
+	"vpcId": "$vpcId",
+	"applicationName": "$applicationName"
+}
+EOF
