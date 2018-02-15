@@ -19,11 +19,14 @@ aws cloudformation create-stack --stack-name $stackname --template-body file://c
 echo "-------Check if the cloudformation has been done sucessfully!"
 stackStatus=$(aws cloudformation describe-stacks --stack-name $stackname --query 'Stacks[0].StackStatus' --output text)
 
-while [[ "$stackStatus" != "CREATE_COMPLETE" && "$stackStatus" != "ROLLBACK_COMPLETE" ]]
+while [[ "$stackStatus" != "CREATE_COMPLETE" ]]
 do
 	stackStatus=$(aws cloudformation describe-stacks --stack-name $stackname --query 'Stacks[0].StackStatus' --output text)
 	echo "Please wait a moment!"
 	echo $stackStatus
+	if [ "$stackStatus" == "ROLLBACK_IN_PROGRESS" ];then
+		break
+	fi
 	sleep 3
 done
 
@@ -33,5 +36,6 @@ if [ "$stackStatus" == "CREATE_COMPLETE" ]; then
 	exit 0
 else
 	echo "failed"
+	aws cloudformation delete-stack --stack-name "$stackname"
 	exit 0
 fi
