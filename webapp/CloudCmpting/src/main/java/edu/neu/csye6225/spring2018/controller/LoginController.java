@@ -1,6 +1,7 @@
 package edu.neu.csye6225.spring2018.controller;
 
 
+import edu.neu.csye6225.spring2018.WebSecurityConfig;
 import edu.neu.csye6225.spring2018.dao.UserRepository;
 import edu.neu.csye6225.spring2018.entity.User;
 import edu.neu.csye6225.spring2018.service.UserService;
@@ -28,6 +29,8 @@ public class LoginController {
     @Autowired
     private UserRepository userRepository;
 
+
+
     //checkAccount
     public boolean checkAccout(String email, String password) {
         User user = new User(email, password);
@@ -41,27 +44,11 @@ public class LoginController {
         else return false;
     }
 
-//    //test function
-//    @RequestMapping(value = "/test")
-//    public String testPage(HttpServletRequest request, Map<String, Object> model, HttpSession session){
-//        Object obj = session.getAttribute(SESSION_KEY);
-//        String email = (String)obj;
-//        String message = "";
-//        session.setAttribute(SESSION_KEY, email);
-//        Date date = new Date();
-//        message = "Hi, " + email + " The time is: " + date.toString();
-//        model.put("message", message);
-//        System.out.println(session.getAttribute(SESSION_KEY));
-//        return "home";
-//    }
-
     //login function
     @RequestMapping(value = "/loggedin")
     public String login(HttpServletRequest request, Map<String, Object> model, HttpSession session) {
         String email = request.getParameter("email");
         String rawPassword = request.getParameter("password");
-//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//        String enPassword = encoder.encode(rawPassword);
         String enPassword = BCrypt.hashpw(rawPassword, BCryptSalt.SALT);
         boolean checked = checkAccout(email, enPassword);
 
@@ -80,10 +67,11 @@ public class LoginController {
             model.put("errmsg", errmsg);
             return "login_err";
         } else {
-            session.setAttribute(SESSION_KEY, email);
             Date date = new Date();
             message = "Hi, " + email + " The time is: " + date.toString();
+            message = "Hi, " + email + " The time is: " + date.toString();
             model.put("message", message);
+            session.setAttribute(WebSecurityConfig.SESSION_KEY, email);
             System.out.println(session.getAttribute(SESSION_KEY));
             return "home";
         }
