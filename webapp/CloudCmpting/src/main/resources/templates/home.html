@@ -6,85 +6,43 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
 <title>Register</title>
-<script type="text/javascript">
-    function clock() {
-        var nowtime = new Date();
-        var flag = "AM";
-        var hours = nowtime.getHours();
-        if (hours > 12) {
-            hours -= 12;
-            flag = "PM";
-        }
-        hours = hours > 9 ? hours : "0" + hours;
-        var minutes = nowtime.getMinutes();
-        minutes = minutes > 9 ? minutes : "0" + minutes;
-        var seconds = nowtime.getSeconds();
-        seconds = seconds > 9 ? seconds : "0" + seconds;
-        var disptime = hours + ":" + minutes + ":" + seconds + " " + flag;
-        document.getElementById("clock").innerHTML = disptime;
-        setTimeout("clock()", 1000);
-    }
-</script>
-<body>
-
-<p id="demo"></p>
-<div class="container" style="text-align: center; margin-top: 5%">
-    <h2>
-        <span th:text="${ message }"></span>
-    </h2>
-    <h2>--------------------------------</h2>
-    <h2>Current Time:
-        <div id="clock"></div>
-        <script type="text/javascript">
-            clock();
-        </script>
-    </h2>
-
-    <div style="text-align: center; margin-top: 2%">
-        <img src="2.jpg" class="img-responsive" alt="Image not found" styple="padding-top: 5px"
-        width="460" height="345"/>
-    </div>
+<body class="text-center">
 
 
-    <div style="text-align: center; margin-top: 1%">
-        <form id="upload-file-form">
-            <label for="upload-file-input">Upload your photo:</label>
-            <input id="upload-file-input" type="file" name="uploadfile" accept="image/jpeg,image/jpg,image/png" />
-            <br />
-            <span id="upload-file-message"></span>
+
+<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link active" href="/user/home">Home</a>
+                <a class="nav-link active" href="/user/index">Profile</a>
+                <a class="nav-link active" href="/user/register">Sign Up</a>
+                <a class="nav-link active" href="/user/login">Sign In</a>
+            </nav>
+        </div>
+    </header>
+
+    <main role="main" class="inner cover">
+        <div class="container" style="text-align: center; width: 30%; margin-top: 10%">
+
+        <form action="/user/search" accept-charset="utf-8" method="POST">
+            <div class="form-label-group">
+                <input type="text" id="searchEmail" name="email" class="form-control" placeholder="Please enter email for search" maxlength="30"
+                       autofocus="autofocus" required="required"/>
+            </div>
+            <div>-------------------------------------------------</div>
+            <button type="submit" value="Submit" class="btn btn-success">Search User Profile</button>
         </form>
-    </div>
+            <div>About ME Section</div>
+            <img class="mb-4" id="imgFrame" th:src="@{'/imgs/' + ${imageFilePath}}"  alt="" width="72" height="72"/>
+            <div style="text-align: center; margin-top: 2%">
+                <span id="textaboutme" th:text="${aboutMe}" name="aboutme" style= "width: 40%;height: 100px"/>
+            </div>
 
-    <div>
-        <button th:type="button" id="upload-avatar-btn" class="btn btn-primary" style="margin-top: 1%">Upload</button>
-        <button th:type="button" id="delete-avatar-btn" class="btn btn-warning" style="margin-top: 1%">Delete</button>
-    </div>
+        </div>
+    </main>
 
-    <div style="text-align: center; margin-top: 2%">
-        <input th:type="text" id="textaboutme" name="aboutme" value="1234" style= "width: 40%;height: 100px"
-               placeholder="Enter your Content (140 maximum!)" maxlength="140" />
-    </div>
-    <div>
-        <button th:type="button" class="btn btn-default" style="margin-top: 1%">Save</button>
-    </div>
-
-    <button th:type="button" class="btn btn-link"><a href="/user/logout">Logout</a></button>
 </div>
-<script>
-    $(document).ready(function() {
-        $("#upload-file-input").on("change", uploadFile);
-    });
-
-    // Upload the avatar and send it via AJAX at the Spring boot Server
-    function upLoadAvatar() {
-     $.ajax({
-         url:"/home",
-         type: "POST",
-         data: new FormData($)
-     })
-    }
-</script>
-
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

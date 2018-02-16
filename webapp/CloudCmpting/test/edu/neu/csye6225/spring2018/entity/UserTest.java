@@ -8,7 +8,7 @@ public class UserTest {
 
     @Test
     public void getPassword() throws Exception {
-        User test1 = new User("test1@qq.com","123");
+        User test1 = new User("test1@qq.com","123","","");
         assertEquals("123",test1.getPassword());
     }
 
@@ -21,7 +21,7 @@ public class UserTest {
 
     @Test
     public void getEmail() {
-        User test1 = new User("test1@qq.com","123");
+        User test1 = new User("test1@qq.com","123","","");
         assertEquals("test1@qq.com",test1.getEmail());
     }
 

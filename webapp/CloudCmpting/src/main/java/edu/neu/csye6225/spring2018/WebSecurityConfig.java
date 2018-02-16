@@ -26,13 +26,16 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         InterceptorRegistration addInterceptor = registry.addInterceptor(getSecurityInterceptor());
 
-//        addInterceptor.excludePathPatterns("/user/login");
+        addInterceptor.excludePathPatterns("/user/home");
         addInterceptor.excludePathPatterns("/user/register");
         addInterceptor.excludePathPatterns("/user/index");
+        addInterceptor.excludePathPatterns("/user/login");
         addInterceptor.excludePathPatterns("/user/registered");
         addInterceptor.excludePathPatterns("/user/loggedin");
         addInterceptor.excludePathPatterns("/user/login_err");
         addInterceptor.excludePathPatterns("/user/register_err");
+        addInterceptor.excludePathPatterns("/user/search");
+        addInterceptor.excludePathPatterns("/user/upload");
 
         addInterceptor.addPathPatterns("/**");
     }
@@ -46,16 +49,14 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
 
 //            check if any user existed in the session
             if (session.getAttribute(SESSION_KEY) == null) {
-                String url = "/user/login";
+                String url = "/user/index";
                 response.sendRedirect(url);
                 return false;
             }
             else{
                 return true;
             }
-
 //            check whether user is logged in
-
         }
     }
 }

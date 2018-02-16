@@ -3,50 +3,56 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Register</title>
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
     <title>Register</title>
 </head>
-<body>
-<div class="container" style="text-align: center; width: 30%; margin-top: 10%">
-<form class="form-signin" name="my_form" id="regUser" accept-charset="utf-8" action="/user/registered" method="POST">
-    <div class="text-center mb-4">
-        <h1 class="h3 mb-3 font-weight-normal">Register</h1>
-    </div>
+<body class="text-center">
 
-    <div class="form-label-group">
-        <input type="email" id="inputEmail" name="email"  class="form-control" placeholder="Email address" maxlength="30"
-               autofocus="autofocus" required="required"/>
-    </div>
+<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link active" href="/user/home">Home</a>
+                <a class="nav-link active" href="/user/index">Profile</a>
+                <a class="nav-link active" href="/user/register">Sign Up</a>
+                <a class="nav-link active" href="/user/login">Sign In</a>
+            </nav>
+        </div>
+    </header>
 
-    <div class="form-label-group">
-        <input type="text" id="inputUsername" name="username"  class="form-control" placeholder="Username" maxlength="30"
-               autofocus="autofocus" required="required"/>
-    </div>
+    <main role="main" class="inner cover">
+        <div class="container" style="text-align: center; width: 30%; margin-top: 10%">
+            <form class="form-signin" name="my_form" id="regUser" accept-charset="utf-8" action="/user/registered" method="POST">
+                <div class="text-center mb-4">
+                    <h1 class="h3 mb-3 font-weight-normal">Register</h1>
+                </div>
 
-    <div class="form-label-group">
-        <input type="password" id="inputPassword" name="pwd1" class="form-control" placeholder="Password" required="required"
-               maxlength="30" onblur="Check()"/>
-    </div>
+                <div class="form-label-group">
+                    <input type="email" id="inputEmail" name="email"  class="form-control" placeholder="Email address" maxlength="30"
+                           autofocus="autofocus" required="required"/>
+                </div>
 
-    <div class="form-label-group">
-        <input type="password" id="inputPassword2" name="pwd2" class="form-control" placeholder="Confirm Password"
-               required="required" maxlength="30" onblur="Check()"/>
-    </div>
+                <div class="form-label-group">
+                    <input type="password" id="inputPassword" name="pwd1" class="form-control" placeholder="Password" required="required"
+                           maxlength="30" onblur="Check()"/>
+                </div>
 
-    <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" value="remember-me"/> Remember me
-        </label>
-    </div>
+                <div class="form-label-group">
+                    <input type="password" id="inputPassword2" name="pwd2" class="form-control" placeholder="Confirm Password"
+                           required="required" maxlength="30" onblur="Check()"/>
+                </div>
 
-    <button class="btn btn-lg btn-primary btn-block" type="submit" value="Submit">Register</button>
-    <p class="mt-5 mb-3 text-muted text-center">&copy; 2017-2018</p>
+                <button class="btn btn-lg btn-primary btn-block" type="submit" value="Submit">Register</button>
+                <p class="mt-5 mb-3 text-muted text-center">&copy; 2017-2018</p>
+                <p class="mt-5 mb-3 text-muted text-center">CSYE6225, by @Chai Yi@Rui Sun@Tianjiao Xue</p>
 
-</form>
+            </form>
+        </div>
+    </main>
+
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

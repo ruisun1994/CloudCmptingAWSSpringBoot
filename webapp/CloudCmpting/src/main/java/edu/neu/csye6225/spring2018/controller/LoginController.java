@@ -18,8 +18,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static edu.neu.csye6225.spring2018.WebSecurityConfig.SESSION_KEY;
-
 @Controller
 @RequestMapping("/user/*")
 public class LoginController {
@@ -37,7 +35,10 @@ public class LoginController {
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withMatcher("email", ExampleMatcher.GenericPropertyMatchers.startsWith())
                 .withMatcher("password", ExampleMatcher.GenericPropertyMatchers.startsWith())
-                .withIgnorePaths("id");
+                .withIgnorePaths("id")
+                .withIgnorePaths("aboutMe")
+                .withIgnorePaths("imageFilePath");
+
         Example<User> userExample = Example.of(user, matcher);
         List<User> userList = userRepository.findAll(userExample);
         if (!userList.isEmpty()) return true;
@@ -50,30 +51,36 @@ public class LoginController {
         String email = request.getParameter("email");
         String rawPassword = request.getParameter("password");
         String enPassword = BCrypt.hashpw(rawPassword, BCryptSalt.SALT);
+        String aboutMe = "";
+        String imageFilePath = "";
         boolean checked = checkAccout(email, enPassword);
 
         String message = "";
         String errmsg = "";
 
-        System.out.println(email);
-        System.out.println(rawPassword);
+        System.out.println("email3" + email);
+        System.out.println("rawPassword:" + rawPassword);
         if (!userService.existsByEmail(email)) {
             errmsg = "Not yet registered";
             model.put("errmsg", errmsg);
             return "login_err";
         } else if (!checked) {
             errmsg = "Wrong Password!";
-            System.out.println(enPassword);
+            System.out.println("enPassword" + enPassword);
             model.put("errmsg", errmsg);
             return "login_err";
         } else {
             Date date = new Date();
             message = "Hi, " + email + " The time is: " + date.toString();
-            message = "Hi, " + email + " The time is: " + date.toString();
             model.put("message", message);
             session.setAttribute(WebSecurityConfig.SESSION_KEY, email);
-            System.out.println(session.getAttribute(SESSION_KEY));
-            return "home";
+            User user = userService.findByEmail(email);
+            aboutMe = user.getAboutMe();
+            imageFilePath = user.getImageFilePath();
+            model.put("aboutMe",aboutMe);
+            model.put("imageFilePath", imageFilePath);
+//            System.out.println(session.getAttribute(SESSION_KEY));
+            return "profile";
         }
     }
 }

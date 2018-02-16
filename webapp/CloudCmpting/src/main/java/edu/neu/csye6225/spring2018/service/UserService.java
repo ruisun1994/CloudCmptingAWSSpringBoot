@@ -28,10 +28,15 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 
     public boolean existsByEmail (String email) {
         return userRepository.existsByEmail(email);
     }
 
-
+    public void updateUser(int id, String aboutMe, String imageFilePath) {
+        userRepository.updateUser(id, aboutMe, imageFilePath);
+    }
 }

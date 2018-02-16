@@ -6,63 +6,42 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
 <title>Register</title>
-<script type="text/javascript">
-    function clock() {
-        var nowtime = new Date();
-        var flag = "AM";
-        var hours = nowtime.getHours();
-        if (hours > 12) {
-            hours -= 12;
-            flag = "PM";
-        }
-        hours = hours > 9 ? hours : "0" + hours;
-        var minutes = nowtime.getMinutes();
-        minutes = minutes > 9 ? minutes : "0" + minutes;
-        var seconds = nowtime.getSeconds();
-        seconds = seconds > 9 ? seconds : "0" + seconds;
-        var disptime = hours + ":" + minutes + ":" + seconds + " " + flag;
-        document.getElementById("clock").innerHTML = disptime;
-        setTimeout("clock()", 1000);
-    }
-</script>
-<body>
+<body class="text-center">
 
-<p id="demo"></p>
-<div class="container" style="text-align: center; margin-top: 5%">
-    <h2>
-        <span th:text="${ message }"></span>
-    </h2>
-    <h2>--------------------------------</h2>
-    <h2>Current Time:
-        <div id="clock"></div>
-        <script type="text/javascript">
-            clock();
-        </script>
-    </h2>
 
-    <div style="text-align: center; margin-top: 2%">
-        <img src="2.jpg" class="img-responsive" alt="Image not found" styple="padding-top: 5px"
-        width="460" height="345"/>
-    </div>
 
-    <div style="text-align: center; margin-top: 1%">
-        <input type="file" accept="image/jpeg,image/jpg,image/png" name="file" />
-    </div>
-    <div>
+<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link active" href="/user/home">Home</a>
+                <a class="nav-link active" href="/user/index">Profile</a>
+                <a class="nav-link active" href="/user/register">Sign Up</a>
+                <a class="nav-link active" href="/user/login">Sign In</a>
+            </nav>
+        </div>
+    </header>
 
-        <button th:type="button" class="btn btn-primary" style="margin-top: 1%">Upload</button>
-        <button th:type="button" class="btn btn-warning" style="margin-top: 1%">Delete</button>
-    </div>
+    <main role="main" class="inner cover">
+        <div class="container" style="text-align: center; width: 30%; margin-top: 10%">
 
-    <div style="text-align: center; margin-top: 2%">
-        <input th:type="text" id="textaboutme" name="aboutme" value="1234" style= "width: 40%;height: 100px"
-               placeholder="Enter your Content (140 maximum!)" maxlength="140" />
-    </div>
-    <div>
-        <button th:type="button" class="btn btn-default" style="margin-top: 1%">Save</button>
-    </div>
+        <form action="/user/search" accept-charset="utf-8" method="POST">
+            <div class="form-label-group">
+                <input type="text" id="searchEmail" name="email" class="form-control" placeholder="Please enter email for search" maxlength="30"
+                       autofocus="autofocus" required="required"/>
+            </div>
+            <div>-------------------------------------------------</div>
+            <button type="submit" value="Submit" class="btn btn-success">Search User Profile</button>
+        </form>
+            <div>About ME Section</div>
+            <img class="mb-4" id="imgFrame" th:src="@{'/imgs/' + ${imageFilePath}}"  alt="" width="72" height="72"/>
+            <div style="text-align: center; margin-top: 2%">
+                <span id="textaboutme" th:text="${aboutMe}" name="aboutme" style= "width: 40%;height: 100px"/>
+            </div>
 
-    <button th:type="button" class="btn btn-link"><a href="/user/logout">Logout</a></button>
+        </div>
+    </main>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
