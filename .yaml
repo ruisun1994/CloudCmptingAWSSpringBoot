@@ -6,15 +6,21 @@ jdk:
 sudo: false
 install: true
 
+branches:
+  only:
+  -csye6225-spring2018-thur-demo
+
 script:
   - cd webapp/CloudCmpting
   - mvn clean install
 
-branches:
-  only:
-  - csye6225-spring2018-thur-demo
+after
 
 notifications:
   email:
     recipients:
     - xue.ti@husky.neu.edu
+    - chai.yi@husky.neu.edu
+    - rui.sun@husky.neu.edu
+
+

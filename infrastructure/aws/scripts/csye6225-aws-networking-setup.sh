@@ -10,7 +10,7 @@ echo $stackname
 
 
 
-#Usefull Variables in the Script
+#Useful Variables in the Script
 serverZone="us-east-1"
 vpcName="$stackname-csye6225-vpc"
 gatewayName="$stackname-csye6225-InternetGateway"
