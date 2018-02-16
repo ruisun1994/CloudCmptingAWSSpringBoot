@@ -24,7 +24,7 @@ public class UserService {
         String salt = BCrypt.gensalt();
         System.out.println(salt);
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCryptSalt.SALT));
-        user.setEmail(user.getEmail());
+        //user.setEmail(user.getEmail());
         userRepository.save(user);
     }
 
