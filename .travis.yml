@@ -8,7 +8,7 @@ install: true
 
 script:
   - cd webapp/CloudCmpting
-  - mvn clean install
+  - mvn clean package install
 
 notifications:
   email:
