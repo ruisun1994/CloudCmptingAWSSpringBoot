@@ -7,11 +7,10 @@ import javax.persistence.Id;
 
 @Entity(name = "user")
 public class User {
-    //使用@Id指定主键.使用代码@GeneratedValue(strategy=GenerationType.AUTO)
-    //指定主键的生成策略，mysql默认的是自增长
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id; //primary key
+<<<<<<< HEAD
     private String email;
     private String password;
     private String username;
@@ -32,7 +31,33 @@ public class User {
         this.username = username;
         this.imgPath = imgPath;
         this.aboutMe = aboutMe;
+=======
+    //    private String username;
+    private String email;
+    private String password;
+    private String aboutMe;
+    private String imageFilePath;
+
+
+    public User() {}
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+//        this.userName = userName;
+        this.aboutMe = "";
+        this.imageFilePath = "";
     }
+
+    public User(String email, String password, String aboutMe, String imageFilePath) {
+        this.email = email;
+        this.password = password;
+//        this.userName = userName;
+        this.aboutMe = aboutMe;
+        this.imageFilePath = imageFilePath;
+>>>>>>> 5c60689443bb356a3518688f529ba947a5f22eee
+    }
+
+
 
     public int getId() {
         return id;
@@ -67,6 +92,22 @@ public class User {
     public String getAboutMe() { return aboutMe; }
 
     public void setAboutMe(String aboutMe) { this.aboutMe = aboutMe; }
+
+    public String getAboutMe() {
+        return aboutMe;
+    }
+
+    public void setAboutMe(String aboutMe) {
+        this.aboutMe = aboutMe;
+    }
+
+    public String getImageFilePath() {
+        return imageFilePath;
+    }
+
+    public void setImageFilePath(String imageFilePath) {
+        this.imageFilePath = imageFilePath;
+    }
 
     @Override
     public String toString() {

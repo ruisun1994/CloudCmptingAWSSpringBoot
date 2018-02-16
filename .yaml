@@ -1,0 +1,26 @@
+language: java
+jdk:
+  - openjdk8
+
+
+sudo: false
+install: true
+
+branches:
+  only:
+  -csye6225-spring2018-thur-demo
+
+script:
+  - cd webapp/CloudCmpting
+  - mvn clean install
+
+after
+
+notifications:
+  email:
+    recipients:
+    - xue.ti@husky.neu.edu
+    - chai.yi@husky.neu.edu
+    - rui.sun@husky.neu.edu
+
+

@@ -21,23 +21,30 @@ public class UserService {
     User user = new User();
 
     public void save(User user) {
-//        user.setEnabled(true);
-//        user.setPassword(encoder.encode(user.getPassword()));
         String salt = BCrypt.gensalt();
         System.out.println(salt);
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCryptSalt.SALT));
+<<<<<<< HEAD
         user.setEmail(user.getEmail());
         user.setUsername(user.getUsername());
         user.setAboutMe(user.getAboutMe());
         user.setImgPath(user.getImgPath());
+=======
+        //user.setEmail(user.getEmail());
+>>>>>>> 5c60689443bb356a3518688f529ba947a5f22eee
         userRepository.save(user);
     }
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 
 
     public boolean existsByEmail (String email) {
         return userRepository.existsByEmail(email);
     }
 
-
+    public void updateUser(int id, String aboutMe, String imageFilePath) {
+        userRepository.updateUser(id, aboutMe, imageFilePath);
+    }
 }

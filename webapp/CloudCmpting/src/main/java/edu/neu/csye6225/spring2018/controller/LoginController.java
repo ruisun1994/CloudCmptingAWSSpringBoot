@@ -28,50 +28,59 @@ public class LoginController {
     private UserRepository userRepository;
 
 
+
     //checkAccount
-    public boolean checkAccout (String email, String password) {
+    public boolean checkAccout(String email, String password) {
         User user = new User(email, password);
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withMatcher("email", ExampleMatcher.GenericPropertyMatchers.startsWith())
                 .withMatcher("password", ExampleMatcher.GenericPropertyMatchers.startsWith())
-                .withIgnorePaths("id");
+                .withIgnorePaths("id")
+                .withIgnorePaths("aboutMe")
+                .withIgnorePaths("imageFilePath");
+
         Example<User> userExample = Example.of(user, matcher);
         List<User> userList = userRepository.findAll(userExample);
-        if(!userList.isEmpty()) return true;
+        if (!userList.isEmpty()) return true;
         else return false;
     }
 
     //login function
     @RequestMapping(value = "/loggedin")
-    public String login(HttpServletRequest request, Map<String, Object> model, HttpSession session){
+    public String login(HttpServletRequest request, Map<String, Object> model, HttpSession session) {
         String email = request.getParameter("email");
         String rawPassword = request.getParameter("password");
-//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//        String enPassword = encoder.encode(rawPassword);
         String enPassword = BCrypt.hashpw(rawPassword, BCryptSalt.SALT);
+        String aboutMe = "";
+        String imageFilePath = "";
         boolean checked = checkAccout(email, enPassword);
 
         String message = "";
         String errmsg = "";
 
-        System.out.println(email);
-        System.out.println(rawPassword);
+        System.out.println("email3" + email);
+        System.out.println("rawPassword:" + rawPassword);
         if (!userService.existsByEmail(email)) {
             errmsg = "Not yet registered";
             model.put("errmsg", errmsg);
             return "login_err";
-        }
-        else if ( !checked ) {
+        } else if (!checked) {
             errmsg = "Wrong Password!";
-            System.out.println(enPassword);
+            System.out.println("enPassword" + enPassword);
             model.put("errmsg", errmsg);
             return "login_err";
-        }else {
-            session.setAttribute(WebSecurityConfig.SESSION_KEY, email);
+        } else {
             Date date = new Date();
             message = "Hi, " + email + " The time is: " + date.toString();
             model.put("message", message);
-            return "home";
+            session.setAttribute(WebSecurityConfig.SESSION_KEY, email);
+            User user = userService.findByEmail(email);
+            aboutMe = user.getAboutMe();
+            imageFilePath = user.getImageFilePath();
+            model.put("aboutMe",aboutMe);
+            model.put("imageFilePath", imageFilePath);
+//            System.out.println(session.getAttribute(SESSION_KEY));
+            return "profile";
         }
     }
 }
