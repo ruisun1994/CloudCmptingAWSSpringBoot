@@ -28,7 +28,7 @@ public class IndexController {
     @Autowired
     private UserService userService;
 
-//  private LoginService loginService;
+//    private LoginService loginService;
 
     //index page
     @GetMapping("/user/")
@@ -73,13 +73,9 @@ public class IndexController {
 
     //login page
     @RequestMapping("/login")
-    public String login() { return "login"; }
-
-    //jump to user list
-    @RequestMapping("/userlist")
-    public String listUser() { return "userlist"; }
-
-
+    public String login() {
+        return "login";
+    }
 
     //register function
     @RequestMapping(value = "/registered")
@@ -87,22 +83,6 @@ public class IndexController {
         String email = request.getParameter("email");
         String password = request.getParameter("pwd1");
         String password2 = request.getParameter("pwd2");
-<<<<<<< HEAD
-        String username =request.getParameter("username") ;
-
-
-//        System.out.println(userRepository.existsByEmail(email));
-        if(userService.existsByEmail(email)) {
-            errmsg = "This email address have been registered";
-            model.put("errmsg", this.errmsg);
-            return "register_err";
-        }
-        else if(password.equals(password2)) {
-            User user = new User();
-            user.setEmail(email);
-            user.setPassword(password);
-            user.setUsername(username);
-=======
 //        String username = request.getParameter("username");
         String aboutMe = "";
         String imageFilePath = "";
@@ -112,7 +92,6 @@ public class IndexController {
             return "register_err";
         } else if (password.equals(password2)) {
             User user = new User(email, password, aboutMe, imageFilePath);
->>>>>>> 5c60689443bb356a3518688f529ba947a5f22eee
             userService.save(user);
             System.out.println("email2" + email);
 //            System.out.println(user.getPassword());
@@ -135,15 +114,4 @@ public class IndexController {
         //session.invalidate();
         return "home";
     }
-
-
-    //getAllUsers
-    @GetMapping(path="/userlist")
-    public String getAllUser(Map<String, Object> model) {
-        //model.put("user",userRepository.findAll());
-        return "userlist";
-
-    }
-
-
 }
