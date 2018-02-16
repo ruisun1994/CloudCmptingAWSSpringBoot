@@ -1,0 +1,9 @@
+{
+	"instanceId": "",
+	"groupId": "sg-47e64b2c",
+	"subnetId1": "subnet-c9260084",
+	"subnetId2": "subnet-f22305bf",
+	"routeTableId": "rtb-105c3878",
+	"gatewayId": "igw-7537371c",
+	"vpcId": "vpc-9d5df5f5"
+}

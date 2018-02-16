@@ -13,6 +13,22 @@ if
 	exit 0
 fi
 
+<<<<<<< HEAD
+aws cloudformation delete-stack --stack-name "$stackname"
+
+stackStatus=$(aws cloudformation describe-stacks --stack-name $stackname --query 'Stacks[0].StackStatus' --output text)
+sleep 100
+stackStatus=$(aws cloudformation describe-stacks --stack-name $stackname --query 'Stacks[0].StackStatus' --output text)
+
+if [ "$stackStatus" == "DELETE_COMPLETE" ]; then
+	#statements
+	echo "stack delete sucessfully!"
+	exit 0
+else
+	echo "failed"
+	exit 0
+fi
+=======
 echo
 echo "-------Continue to work:"
 
@@ -38,3 +54,4 @@ else
 	echo "Failed"
 	exit 0
 fi
+>>>>>>> 5c60689443bb356a3518688f529ba947a5f22eee
