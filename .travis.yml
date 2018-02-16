@@ -10,6 +10,10 @@ script:
   - cd webapp/CloudCmpting
   - mvn clean install
 
+branches:
+  only:
+  - csye6225-spring2018-thur-demo
+
 notifications:
   email:
     recipients:

@@ -12,6 +12,11 @@
   "Conditions" : {
   },
   "Parameters": {
+    "S3BucketName": {
+      "Type": "String",
+      "Default": "csye6225-spring2018-sunrui.me",
+      "AllowedValues": ["csye6225-spring2018-sunrui.me", "csye6225-spring2018-xuetianjiao.me", "csye6225-spring2018-chaiyi.me"]
+    }
   },
   "Resources": {
     "myVPC": {
@@ -37,7 +42,7 @@
     ]
       }
     },
-    "myAttachGateway" : {
+    "myAttachGateway": {
       "Type": "AWS::EC2::VPCGatewayAttachment",
       "Properties": {
         "VpcId": {
@@ -48,7 +53,37 @@
         }
       }
     },
-    "myRouteTable": {
+    "mySubnet1": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/24",
+        "AvailabilityZone" : "us-east-1a",
+        "VpcId": {
+          "Ref": "myVPC"
+        }
+      }
+    },
+    "mySubnet2": {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "CidrBlock" : "10.0.1.0/24",
+        "AvailabilityZone" : "us-east-1e",
+        "VpcId" : { "Ref" : "myVPC"}
+      }
+    },
+    "myPrivateRouteTable": {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "myVPC" },
+        "Tags" : [
+      {
+        "Key" : "Name",
+        "Value" : { "Fn::Join" : [ "", [ {"Ref" :  "AWS::StackName"}, "-csye6225-private-route-table" ] ]}
+      }
+    ]
+      }
+    },
+    "myPublicRouteTable": {
       "Type" : "AWS::EC2::RouteTable",
       "Properties" : {
         "VpcId" : { "Ref" : "myVPC" },
@@ -60,13 +95,113 @@
     ]
       }
     },
-    "myRoute": {
-      "Type" : "AWS::EC2::Route",
+    "mySubnet1PublicRouteTableAssociation": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
       "Properties" : {
-        "RouteTableId" : { "Ref" : "myRouteTable" },
-        "DestinationCidrBlock" : "0.0.0.0/0",
-        "GatewayId" : { "Ref" : "myInternetGateway" }
+        "SubnetId" : { "Ref" : "mySubnet1" },
+        "RouteTableId" : { "Ref" : "myPublicRouteTable" }
       }
+    },
+    "mySubnet2PrivateRouteTableAssociation": {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "mySubnet2" },
+        "RouteTableId" : { "Ref" : "myPrivateRouteTable" }
+      }
+    },
+    "InstanceSecurityGroupForWeb": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupName": "csye6225-webapp",
+        "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22, HTTPS access via port 443",
+        "VpcId": {
+          "Ref": "myVPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "80",
+            "ToPort": "80",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "443",
+            "ToPort": "443",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "myEC2InstanceForWeb": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-66506c1c",
+        "InstanceType": "t2.micro",
+        "SecurityGroupIds": [
+          {"Ref": "InstanceSecurityGroupForWeb"}
+        ],
+        "BlockDeviceMappings" : [
+          {
+            "DeviceName" : "/dev/sdm",
+            "Ebs": {
+              "VolumeType" : "gp2",
+              "VolumeSize" : "16",
+              "DeleteOnTermination" : "false"
+            }
+          }
+        ],
+        "SubnetId": {
+          "Ref": "mySubnet1"
+        },
+        "Tags" : [
+      {
+        "Key" : "Name",
+        "Value" : { "Fn::Join" : [ "", [ {"Ref" : "AWS::StackName"}, "-csye6225-ec2instanceforweb" ] ]}
+      }
+    ]
+      }
+    },
+    "myRDSInstanceSecurityGroup": {
+      "Type" : "AWS::RDS::DBSecurityGroup",
+      "Properties" : {
+         "GroupDescription" : "Ingress for Amazon EC2 security group",
+         "EC2VpcId" : { "Ref" : "myVPC" },
+         "DBSecurityGroupIngress" : [ {
+               "EC2SecurityGroupId" : {"Ref": "InstanceSecurityGroupForWeb"}
+            } ]
+      }
+    },
+    "myDBSubnetGroup": {
+         "Type" : "AWS::RDS::DBSubnetGroup",
+         "Properties" : {
+            "DBSubnetGroupDescription" : "description",
+            "SubnetIds" : [ {"Ref": "mySubnet1"}, {"Ref": "mySubnet2"} ]
+         }
+    },
+    "myRDSInstance": {
+      "Type" : "AWS::RDS::DBInstance",
+      "Properties" : {
+         "DBName" : "myRDSInstance",
+         "AllocatedStorage" : "100",
+         "DBInstanceClass" : "db.t2.medium",
+         "MultiAZ": false,
+         "DBInstanceIdentifier": "csye6225-spring2018",
+         "Engine" : "MySQL",
+         "EngineVersion" : "5.6.37",
+         "MasterUsername" :  "csye6225master",
+         "MasterUserPassword" : "csye6225password",
+         "PubliclyAccessible" : false,
+         "DBSubnetGroupName": {"Ref": "myDBSubnetGroup"},
+         "Tags" : [ { "Key" : "Name", "Value" : "csye6225" } ]
+      },
+      "DeletionPolicy" : "Snapshot"
     },
     "myApplication": {
       "Type" : "AWS::ElasticBeanstalk::Application",
@@ -74,6 +209,34 @@
          "ApplicationName" : "SampleAWSElasticBeanstalkApplication",
          "Description" : "AWS Elastic Beanstalk Java Application"
       }
+  },
+  "myDynamoDBTable": {
+    "Type" : "AWS::DynamoDB::Table",
+    "Properties" : {
+      "TableName": "csye6225",
+      "AttributeDefinitions" : [
+        {
+          "AttributeName" : "id",
+          "AttributeType" : "S"
+        }
+      ],
+      "ProvisionedThroughput" : {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+      },
+      "KeySchema": [
+          {
+            "AttributeName" : "id",
+            "KeyType" : "HASH"
+          }
+        ]
+    }
+  },
+  "myS3Bucket": {
+    "Type" : "AWS::S3::Bucket",
+    "Properties": {
+      "BucketName" : {"Ref": "S3BucketName"},
+    }
   }
 }
 }

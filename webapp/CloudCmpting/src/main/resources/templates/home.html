@@ -1,30 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 <title>Home</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
 <title>Register</title>
-<script type="text/javascript">
-    function clock(){
-        var nowtime = new Date();
-        var flag="AM";
-        var hours=nowtime.getHours();
-        if(hours>12){
-            hours-=12;
-            flag="PM";
-        }
-        hours=hours>9?hours:"0"+hours;
-        var minutes=nowtime.getMinutes();
-        minutes=minutes>9?minutes:"0"+minutes;
-        var seconds=nowtime.getSeconds();
-        seconds=seconds>9?seconds:"0"+seconds;
-        var disptime=hours+":"+minutes+":"+seconds+" "+flag;
-        document.getElementById("clock").innerHTML=disptime;
-        setTimeout("clock()",1000);
-    }
-</script>
+<<<<<<< HEAD
 <body>
 
 <p id="demo"></p>
@@ -32,15 +14,54 @@
     <h2>
         <span th:text="${ message }"></span>
     </h2>
-    <h2>--------------------------------</h2>
-    <h2>Current Time:
-        <div id="clock"></div>
-        <script type="text/javascript">
-            clock();
-        </script>
-    </h2>
 
-    <button th:type="button" class="btn btn-link"><a href="firstPage.html">Logout</a></button>
+    <img src="$picturePath"/>
+    <form action="/user/home" method="post" name="imageForm" id="uploadImg">
+        <input type="file" name ="file"/>
+        <input type ="submit" value="Upload"/>
+        <input type ="text" name="aboutMe">
+    </form>
+
+
+    <button th:type="button" class="btn btn-link"><a href="/user/index">Logout</a></button>
+=======
+<body class="text-center">
+
+
+
+<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link active" href="/user/home">Home</a>
+                <a class="nav-link active" href="/user/index">Profile</a>
+                <a class="nav-link active" href="/user/register">Sign Up</a>
+                <a class="nav-link active" href="/user/login">Sign In</a>
+            </nav>
+        </div>
+    </header>
+
+    <main role="main" class="inner cover">
+        <div class="container" style="text-align: center; width: 30%; margin-top: 10%">
+
+        <form action="/user/search" accept-charset="utf-8" method="POST">
+            <div class="form-label-group">
+                <input type="text" id="searchEmail" name="email" class="form-control" placeholder="Please enter email for search" maxlength="30"
+                       autofocus="autofocus" required="required"/>
+            </div>
+            <div>-------------------------------------------------</div>
+            <button type="submit" value="Submit" class="btn btn-success">Search User Profile</button>
+        </form>
+            <div>About ME Section</div>
+            <img class="mb-4" id="imgFrame" th:src="@{'/imgs/' + ${imageFilePath}}"  alt="" width="72" height="72"/>
+            <div style="text-align: center; margin-top: 2%">
+                <span id="textaboutme" th:text="${aboutMe}" name="aboutme" style= "width: 40%;height: 100px"/>
+            </div>
+
+        </div>
+    </main>
+
+>>>>>>> 5c60689443bb356a3518688f529ba947a5f22eee
 </div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
