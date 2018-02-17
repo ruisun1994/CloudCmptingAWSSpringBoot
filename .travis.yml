@@ -18,3 +18,5 @@ notifications:
   email:
     recipients:
     - xue.ti@husky.neu.edu
+    - chai.yi@husky.neu.edu
+    - rui.sun@husky.neu.edu
