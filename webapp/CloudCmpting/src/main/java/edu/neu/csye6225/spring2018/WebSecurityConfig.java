@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 
-/* 登录配置 */
+/* Login Configuration */
 @Configuration
 public class WebSecurityConfig extends WebMvcConfigurerAdapter {
     public final static String SESSION_KEY = "email";
@@ -26,31 +26,37 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         InterceptorRegistration addInterceptor = registry.addInterceptor(getSecurityInterceptor());
 
-        addInterceptor.excludePathPatterns("/user/login");
+        addInterceptor.excludePathPatterns("/user/home");
         addInterceptor.excludePathPatterns("/user/register");
         addInterceptor.excludePathPatterns("/user/index");
+        addInterceptor.excludePathPatterns("/user/login");
         addInterceptor.excludePathPatterns("/user/registered");
         addInterceptor.excludePathPatterns("/user/loggedin");
         addInterceptor.excludePathPatterns("/user/login_err");
         addInterceptor.excludePathPatterns("/user/register_err");
+        addInterceptor.excludePathPatterns("/user/search");
+        addInterceptor.excludePathPatterns("/user/upload");
 
         addInterceptor.addPathPatterns("/**");
     }
 
     private class SecurityInterceptor extends HandlerInterceptorAdapter {
+
         @Override
         public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
             HttpSession session = request.getSession();
+            System.out.print(session.getAttribute(SESSION_KEY));
 
-//            判断是否已有该用户登录的session
-            if (session.getAttribute(SESSION_KEY) != null) {
+//            check if any user existed in the session
+            if (session.getAttribute(SESSION_KEY) == null) {
+                String url = "/user/index";
+                response.sendRedirect(url);
+                return false;
+            }
+            else{
                 return true;
             }
-
-//            跳转到登录页
-            String url = "/user/firstPage";
-            response.sendRedirect(url);
-            return false;
+//            check whether user is logged in
         }
     }
 }

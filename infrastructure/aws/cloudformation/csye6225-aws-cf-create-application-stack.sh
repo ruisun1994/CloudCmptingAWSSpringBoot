@@ -27,6 +27,7 @@ do
 	if [ "$stackStatus" == "ROLLBACK_IN_PROGRESS" ];then
 		break
 	fi
+
 	sleep 3
 done
 
