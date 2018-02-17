@@ -27,7 +27,7 @@ import static edu.neu.csye6225.spring2018.WebSecurityConfig.SESSION_KEY;
 public class ProfileController {
 
     //Save the uploaded file to this folder
-    private static String UPLOADED_FOLDER = "/home/sunrui/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/resources/static/imgs/";
+    private static String UPLOADED_FOLDER = "/home/tianjiao/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/resources/static/imgs/";
 
     @Autowired
     private UserRepository userRepository;
@@ -52,6 +52,7 @@ public class ProfileController {
             Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
             Files.write(path, bytes);
             System.out.println("path" + path);
+    //        if (file.getOriginalFilename() == null)
             System.out.println("file name:" + file.getOriginalFilename());
             String imageFilePath = file.getOriginalFilename();
             String aboutMe = request.getParameter("aboutme");
