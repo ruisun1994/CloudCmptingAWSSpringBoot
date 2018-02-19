@@ -25,14 +25,14 @@
     <main role="main" class="inner cover">
         <div class="container" style="text-align: center; width: 30%; margin-top: 10%">
 
-        <form action="/user/search" accept-charset="utf-8" method="POST">
-            <div class="form-label-group">
-                <input type="text" id="searchEmail" name="email" class="form-control" placeholder="Please enter email for search" maxlength="30"
-                       autofocus="autofocus" required="required"/>
-            </div>
-            <div>-------------------------------------------------</div>
-            <button type="submit" value="Submit" class="btn btn-success">Search User Profile</button>
-        </form>
+            <form action="/user/search" accept-charset="utf-8" method="POST">
+                <div class="form-label-group">
+                    <input type="text" id="searchEmail" name="email" class="form-control" placeholder="Please enter email for search" maxlength="30"
+                           autofocus="autofocus" required="required"/>
+                </div>
+                <div>-------------------------------------------------</div>
+                <button type="submit" value="Submit" class="btn btn-success">Search User Profile</button>
+            </form>
             <div>About ME Section</div>
             <img class="mb-4" id="imgFrame" th:src="@{'/imgs/' + ${imageFilePath}}"  alt="" width="72" height="72"/>
             <div style="text-align: center; margin-top: 2%">

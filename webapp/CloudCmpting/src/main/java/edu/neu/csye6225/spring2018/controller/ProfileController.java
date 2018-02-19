@@ -39,33 +39,33 @@ public class ProfileController {
     @RequestMapping("/upload")
     public String singleFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes, HttpServletRequest request, HttpSession session, Map<String, Object> model) {
+        Path path;
+        user = userService.findByEmail((String)session.getAttribute(SESSION_KEY));
+        String imageFilePath = "default.png";
+        String aboutMe = request.getParameter("aboutme");
+        int id = user.getId();
 
-//        if (file.isEmpty()) {
-//            redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
-//            return "index";
-//        }
-        System.out.println("upload page session key" + session.getAttribute(SESSION_KEY));
-
-        try {
-            // Get the file and save it somewhere
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
-            Files.write(path, bytes);
-            System.out.println("path" + path);
-            System.out.println("file name:" + file.getOriginalFilename());
-            String imageFilePath = file.getOriginalFilename();
-            String aboutMe = request.getParameter("aboutme");
-            User user = new User();
-            user = userService.findByEmail((String)session.getAttribute(SESSION_KEY));
-            int id = user.getId();
-//            System.out.println("imageFilePath: " + imageFilePath);
+        if (file.isEmpty()) {
             userService.updateUser(id, aboutMe, imageFilePath);
             model.put("imageFilePath",imageFilePath);
             model.put("aboutMe",aboutMe);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        }else {
+            System.out.println("upload page session key" + session.getAttribute(SESSION_KEY));
 
+            try {
+                // Get the file and save it somewhere
+                byte[] bytes = file.getBytes();
+                path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
+                Files.write(path, bytes);
+                System.out.println("file name:" + file.getOriginalFilename());
+                imageFilePath = file.getOriginalFilename();
+                userService.updateUser(id, aboutMe, imageFilePath);
+                model.put("imageFilePath",imageFilePath);
+                model.put("aboutMe",aboutMe);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return "profile";
     }
 
