@@ -52,7 +52,6 @@ public class ProfileController {
             Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
             Files.write(path, bytes);
             System.out.println("path" + path);
-    //        if (file.getOriginalFilename() == null)
             System.out.println("file name:" + file.getOriginalFilename());
             String imageFilePath = file.getOriginalFilename();
             String aboutMe = request.getParameter("aboutme");
