@@ -24,14 +24,27 @@ public class UserService {
         String salt = BCrypt.gensalt();
         System.out.println(salt);
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCryptSalt.SALT));
-        user.setEmail(user.getEmail());
+        //user.setEmail(user.getEmail());
         userRepository.save(user);
     }
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 
     public boolean existsByEmail (String email) {
         return userRepository.existsByEmail(email);
     }
 
+    public void updateUser(int id, String aboutMe, String imageFilePath) {
+        userRepository.updateUser(id, aboutMe, imageFilePath);
+    }
 
+    public void updateUserImage(int id, String imageFilePath){
+        userRepository.updateUserImage(id,imageFilePath );
+    }
+
+    public void updateaboutMe(int id, String aboutMe){
+        userRepository.updateaboutMe(id,aboutMe);
+    }
 }

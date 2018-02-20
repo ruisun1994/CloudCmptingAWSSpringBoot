@@ -8,11 +8,13 @@ install: true
 
 script:
   - cd webapp/CloudCmpting
-  - mvn clean install
+  - mvn package
+  - cd ../..
+  - pwd
 
 notifications:
   email:
     recipients:
     - xue.ti@husky.neu.edu
-    - chai.yi@husky.neu.edu
-    - rui.sun@husky.neu.edu
+    - sun.rui@husky.neu.edu
+    - chai.yi@husky.edu.edu
