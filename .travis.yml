@@ -7,9 +7,22 @@ sudo: false
 install: true
 
 script:
+  - pwd
   - cd webapp/CloudCmpting
   - mvn package
   - cd ../..
+  - pwd
+
+
+after_sucess:
+  - mkdir codedeploy
+  - zip -r csye6225-web-app-$TRAVIS_JOB_NUMBER.zip build/libs/ROOT.war infrastruture/aws/codedeploy/appspec.yml
+  - ls -al
+  - pwd
+  - cd codedeploy
+  - ls -al
+  - pwd
+  - cd ..
   - pwd
 
 notifications:
@@ -18,3 +31,4 @@ notifications:
     - xue.ti@husky.neu.edu
     - sun.rui@husky.neu.edu
     - chai.yi@husky.edu.edu
+
