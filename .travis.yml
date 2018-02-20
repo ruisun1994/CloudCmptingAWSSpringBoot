@@ -10,6 +10,7 @@ script:
   - pwd
   - cd webapp/CloudCmpting
   - mvn package
+  - mvn test -Dsurefire.useFile=false
   - cd ../..
   - pwd
 
