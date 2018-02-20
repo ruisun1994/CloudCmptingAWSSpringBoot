@@ -24,7 +24,6 @@ import static edu.neu.csye6225.spring2018.WebSecurityConfig.SESSION_KEY;
 public class IndexController {
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private UserService userService;
 
@@ -92,6 +91,7 @@ public class IndexController {
             return "register_err";
         } else if (password.equals(password2)) {
             User user = new User(email, password, aboutMe, imageFilePath);
+            user.setImageFilePath("default.png");
             userService.save(user);
             System.out.println("email2" + email);
 //            System.out.println(user.getPassword());

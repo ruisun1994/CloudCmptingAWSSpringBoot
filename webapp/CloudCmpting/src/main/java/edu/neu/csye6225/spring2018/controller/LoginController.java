@@ -75,10 +75,11 @@ public class LoginController {
             model.put("message", message);
             session.setAttribute(WebSecurityConfig.SESSION_KEY, email);
             User user = userService.findByEmail(email);
-            aboutMe = user.getAboutMe();
-            imageFilePath = user.getImageFilePath();
-            model.put("aboutMe",aboutMe);
-            model.put("imageFilePath", imageFilePath);
+//            aboutMe = user.getAboutMe();
+//            imageFilePath = user.getImageFilePath();
+            model.put("aboutMe",user.getAboutMe());
+            model.put("imageFilePath", user.getImageFilePath());
+            //System.out.println("upload page session key" + imageFilePath);
 //            System.out.println(session.getAttribute(SESSION_KEY));
             return "profile";
         }

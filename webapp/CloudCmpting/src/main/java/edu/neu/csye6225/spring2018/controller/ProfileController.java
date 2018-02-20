@@ -27,7 +27,7 @@ import static edu.neu.csye6225.spring2018.WebSecurityConfig.SESSION_KEY;
 public class ProfileController {
 
     //Save the uploaded file to this folder
-    private static String UPLOADED_FOLDER = "/home/sunrui/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/resources/static/imgs/";
+    private static String UPLOADED_FOLDER = "/home/chaiyi/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/resources/static/imgs/";
 
     @Autowired
     private UserRepository userRepository;
@@ -41,13 +41,15 @@ public class ProfileController {
                                    RedirectAttributes redirectAttributes, HttpServletRequest request, HttpSession session, Map<String, Object> model) {
         Path path;
         user = userService.findByEmail((String)session.getAttribute(SESSION_KEY));
-        String imageFilePath = "default.png";
+        //String imageFilePath = "default.png";
         String aboutMe = request.getParameter("aboutme");
+        String imageFilePath="";
         int id = user.getId();
 
         if (file.isEmpty()) {
-            userService.updateUser(id, aboutMe, imageFilePath);
-            model.put("imageFilePath",imageFilePath);
+            System.out.println("No photo changed!");
+            userService.updateaboutMe(id, aboutMe);
+            model.put("imageFilePath",user.getImageFilePath());
             model.put("aboutMe",aboutMe);
         }else {
             System.out.println("upload page session key" + session.getAttribute(SESSION_KEY));
@@ -61,6 +63,7 @@ public class ProfileController {
                 imageFilePath = file.getOriginalFilename();
                 userService.updateUser(id, aboutMe, imageFilePath);
                 model.put("imageFilePath",imageFilePath);
+                //System.out.println("upload page session key" + imageFilePath);
                 model.put("aboutMe",aboutMe);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -74,11 +77,12 @@ public class ProfileController {
     public String deleteImgs(HttpServletRequest request, HttpSession session, Map<String, Object> model) {
         user = userService.findByEmail((String)session.getAttribute(SESSION_KEY));
         int id = user.getId();
-        String imageFilePath = "default.png";
+        String defaultFilePath = "default.png";
         String aboutMe = request.getParameter("aboutme");
-        userService.updateUser(id, aboutMe, imageFilePath);
-        System.out.println(imageFilePath);
-        model.put("imageFilePath",imageFilePath);
+        userService.updateUserImage(id, defaultFilePath);
+//        System.out.println(imageFilePath);
+        model.put("imageFilePath",defaultFilePath);
+        model.put("aboutMe",user.getAboutMe());
         return "profile";
     }
 
@@ -95,8 +99,8 @@ public class ProfileController {
             aboutMe = user.getAboutMe();
             System.out.println("home img path: " + imageFilePath);
             System.out.println("aboutme" + aboutMe);
-            model.put("aboutMe", this.aboutMe);
-            model.put("imageFilePath", this.imageFilePath);
+            model.put("aboutMe", aboutMe);
+            model.put("imageFilePath",imageFilePath);
             return "home";
         }else{
             return "index";
