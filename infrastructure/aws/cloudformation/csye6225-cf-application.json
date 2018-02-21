@@ -14,7 +14,7 @@
   "Parameters": {
     "S3BucketName": {
       "Type": "String",
-      "Default": "csye6225-spring2018-sunrui.me",
+      "Default": "csye6225-spring2018-chaiyi.me",
       "AllowedValues": ["csye6225-spring2018-sunrui.me", "csye6225-spring2018-xuetianjiao.me", "csye6225-spring2018-chaiyi.me"]
     }
   },
