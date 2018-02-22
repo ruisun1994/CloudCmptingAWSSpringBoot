@@ -9,8 +9,8 @@ install: true
 script:
   - pwd
   - cd webapp/CloudCmpting
-  - mvn package
-  - mvn test -Dsurefire.useFile=false
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - mvn test -B
   - cd ../..
   - pwd
 
