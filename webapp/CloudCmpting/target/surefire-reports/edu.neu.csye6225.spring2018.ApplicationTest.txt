@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: edu.neu.csye6225.spring2018.ApplicationTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 17.245 sec - in edu.neu.csye6225.spring2018.ApplicationTest

@@ -6,6 +6,8 @@ import edu.neu.csye6225.spring2018.dao.UserRepository;
 import edu.neu.csye6225.spring2018.entity.User;
 import edu.neu.csye6225.spring2018.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -26,7 +28,8 @@ public class LoginController {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private Environment env;
 
 
     //checkAccount
@@ -60,6 +63,8 @@ public class LoginController {
 
         System.out.println("email3" + email);
         System.out.println("rawPassword:" + rawPassword);
+        System.out.println("Is it in AWS: "+env.getProperty("AWS.status"));
+
         if (!userService.existsByEmail(email)) {
             errmsg = "Not yet registered";
             model.put("errmsg", errmsg);

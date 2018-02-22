@@ -5,6 +5,7 @@ import edu.neu.csye6225.spring2018.dao.UserRepository;
 import edu.neu.csye6225.spring2018.entity.User;
 import edu.neu.csye6225.spring2018.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,13 +27,15 @@ import static edu.neu.csye6225.spring2018.WebSecurityConfig.SESSION_KEY;
 @RequestMapping("/user/*")
 public class ProfileController {
 
-    //Save the uploaded file to this folder
-    private static String UPLOADED_FOLDER = "/home/chaiyi/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/resources/static/imgs/";
+//    private static String UPLOADED_FOLDER = "/home/chaiyi/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/resources/static/imgs/";
+private static String UPLOADED_FOLDER;
 
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private Environment env;
 
     User user = new User();
 
@@ -57,6 +60,8 @@ public class ProfileController {
             try {
                 // Get the file and save it somewhere
                 byte[] bytes = file.getBytes();
+                String currentDir = System.getProperty("user.dir");
+                UPLOADED_FOLDER=currentDir+"/src/main/resources/static/imgs/";
                 path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
                 Files.write(path, bytes);
                 System.out.println("file name:" + file.getOriginalFilename());
