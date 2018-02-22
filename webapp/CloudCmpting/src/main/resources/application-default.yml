@@ -30,5 +30,10 @@ multipart:
 AWS:
  status: nnn
 
+amazonProperties:
+  endpointUrl: https://s3.us-east-1.amazonaws.com
+  accessKey: AKIAIOXC57RQHJEVCTKQ
+  secretKey: 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
+  bucketName: csye6225-spring2018-chaiyi.me
 
 
