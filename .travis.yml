@@ -7,23 +7,30 @@ sudo: false
 install: true
 
 script:
-  - pwd
-  - cd webapp/CloudCmpting
-  - mvn package
-  - cd ../..
-  - pwd
+ - pwd
+ - ls -al
+ - mvn clean package install
+ - pwd
+ - ls -al
 
 
-after_sucess:
-  - mkdir codedeploy
-  - zip -r csye6225-web-app-$TRAVIS_JOB_NUMBER.zip build/libs/ROOT.war infrastruture/aws/codedeploy/appspec.yml
+after_success:
+  - pwd
+  - ls -al
+  - mkdir codedeploy_artifact
+  - cp infrastructure/aws/codedeploy/*.sh .
+  - cp infrastructure/aws/codedeploy/*.yml .
+  - zip -r csye6225-web-app-$TRAVIS_JOB_NUMBER.zip webapp/build/libs/ROOT.war *.sh *.yml
+  - ls -al
+  - mv csye6225-web-app-$TRAVIS_JOB_NUMBER.zip codedeploy_artifact/
   - ls -al
   - pwd
-  - cd codedeploy
+  - cd codedeploy_artifact
   - ls -al
   - pwd
   - cd ..
   - pwd
+  - ls -al
 
 deploy:
   - provider: s3
@@ -34,7 +41,7 @@ deploy:
     access_key_id: $access_key_id
     secret_access_key: $secret_access_key
     on:
-      branch: csye6225-spring2018-sat-lab
+      branch: Lab
 
 
 notifications:
