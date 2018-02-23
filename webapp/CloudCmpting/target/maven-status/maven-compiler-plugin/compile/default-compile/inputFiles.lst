@@ -1,12 +1,10 @@
-<<<<<<< HEAD
-/home/tianjiao/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/entity/User.java
-/home/tianjiao/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/WebSecurityConfig.java
-/home/tianjiao/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/controller/LoginController.java
-/home/tianjiao/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/controller/BCryptSalt.java
-/home/tianjiao/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/service/UserService.java
-/home/tianjiao/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/dao/UserRepository.java
-/home/tianjiao/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/Application.java
-/home/tianjiao/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/controller/IndexController.java
-=======
-
->>>>>>> 5c60689443bb356a3518688f529ba947a5f22eee
+/home/chaiyi/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/controller/BCryptSalt.java
+/home/chaiyi/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/controller/IndexController.java
+/home/chaiyi/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/Application.java
+/home/chaiyi/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/service/UserService.java
+/home/chaiyi/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/controller/LoginController.java
+/home/chaiyi/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/controller/ProfileController.java
+/home/chaiyi/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/entity/User.java
+/home/chaiyi/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/service/AmazonClient.java
+/home/chaiyi/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/dao/UserRepository.java
+/home/chaiyi/csye6225/dev/csye6225-spring2018/webapp/CloudCmpting/src/main/java/edu/neu/csye6225/spring2018/WebSecurityConfig.java

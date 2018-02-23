@@ -39,4 +39,12 @@ public class UserService {
     public void updateUser(int id, String aboutMe, String imageFilePath) {
         userRepository.updateUser(id, aboutMe, imageFilePath);
     }
+
+    public void updateUserImage(int id, String imageFilePath){
+        userRepository.updateUserImage(id,imageFilePath );
+    }
+
+    public void updateaboutMe(int id, String aboutMe){
+        userRepository.updateaboutMe(id,aboutMe);
+    }
 }
