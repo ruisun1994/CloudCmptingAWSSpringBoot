@@ -4,6 +4,7 @@ import edu.neu.csye6225.spring2018.entity.User;
 import edu.neu.csye6225.spring2018.service.AmazonClient;
 import edu.neu.csye6225.spring2018.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,18 +13,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.imageio.ImageIO;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.WritableRaster;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+
 
 import static edu.neu.csye6225.spring2018.WebSecurityConfig.SESSION_KEY;
 
@@ -40,35 +38,18 @@ public class ProfileController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private Environment env;
+
+    @Value(("${AWS.status}"))
+    private String status;
 
     User user = new User();
 
     String UPLOADED_FOLDER = "";
 
-    public boolean isAWS() {
-        String result = env.getProperty("AWS.status");
-        if (result.equalsIgnoreCase("yyy")) {
-            System.out.println("Using AWS right now!");
-            return true;
-        } else {
-            System.out.println("Not Using AWS right now!");
-            return false;
-        }
+    public String path2Source(String original) {
+        String result = "/imgs/" + original;
+        return result;
     }
-
-    public byte[] imageToByteArray(String imageName) throws IOException {
-        File imgPath = new File(imageName);
-        BufferedImage bufferedImage = ImageIO.read(imgPath);
-
-        // get DataBufferBytes from Raster
-        WritableRaster raster = bufferedImage.getRaster();
-        DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
-
-        return (data.getData());
-    }
-
 
     @RequestMapping("/upload")
     public String singleFileUpload(@RequestParam("file") MultipartFile file,
@@ -79,12 +60,13 @@ public class ProfileController {
         String aboutMe = request.getParameter("aboutme");
         int id = user.getId();
 
-        if (!isAWS()) {
+        if (status.equalsIgnoreCase("nnn")) {
 
             if (file.isEmpty()) {
                 System.out.println("No photo changed!");
                 userService.updateaboutMe(id, aboutMe);
-                model.put("imageFilePath", user.getImageFilePath());
+                String result = path2Source(user.getImageFilePath());
+                model.put("imageFilePath", result);
                 model.put("aboutMe", aboutMe);
             } else {
                 try {
@@ -97,14 +79,15 @@ public class ProfileController {
                     System.out.println("file name:" + file.getOriginalFilename());
                     String imageFileName = file.getOriginalFilename();
                     userService.updateUser(id, aboutMe, imageFileName);
-                    model.put("imageFilePath", imageFileName);
+                    String result = path2Source(imageFileName);
+                    model.put("imageFilePath", result);
                     //System.out.println("upload page session key" + imageFilePath);
                     model.put("aboutMe", aboutMe);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            return "profile";
+
         } else {
             if (file.isEmpty()) {
                 userService.updateaboutMe(id, aboutMe);
@@ -130,8 +113,8 @@ public class ProfileController {
                 model.put("aboutMe", aboutMe);
             }
 
-            return "profile_aws";
         }
+        return "profile";
     }
 
 
@@ -143,10 +126,10 @@ public class ProfileController {
         userService.updateUserImage(id, defaultFilePath);
         model.put("aboutMe", user.getAboutMe());
 //        System.out.println(imageFilePath);
-        if (!isAWS()) {
+        if (status.equalsIgnoreCase("nnn")) {
             model.put("aboutMe", user.getAboutMe());
-            model.put("imageFilePath", defaultFilePath);
-            return "profile";
+            String result=path2Source(defaultFilePath);
+            model.put("imageFilePath", result);
         } else {
             try {
                 String result = amazonClient.downloadImageFromS3(defaultFilePath);
@@ -155,9 +138,8 @@ public class ProfileController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return "profile_aws";
-
         }
+        return "profile";
     }
 
 
@@ -166,13 +148,29 @@ public class ProfileController {
         String email = request.getParameter("email");
         user = userService.findByEmail(email);
         if (user != null) {
-            System.out.println("searched email: " + user.getEmail());
-            String imageFilePath = user.getImageFilePath();
-            String aboutMe = user.getAboutMe();
-            System.out.println("home img path: " + imageFilePath);
-            System.out.println("aboutme" + aboutMe);
-            model.put("aboutMe", aboutMe);
-            model.put("imageFilePath", imageFilePath);
+            if (status.equalsIgnoreCase("nnn")) {
+                System.out.println("searched email: " + user.getEmail());
+                String imageFilePath = user.getImageFilePath();
+                String aboutMe = user.getAboutMe();
+
+                System.out.println("home img path: " + imageFilePath);
+                System.out.println("aboutme" + aboutMe);
+
+                String result=path2Source(imageFilePath);
+                model.put("aboutMe", aboutMe);
+                model.put("imageFilePath", result);
+            } else {
+                System.out.println("searched email: " + user.getEmail());
+                String imageFileName = user.getImageFilePath();
+                String aboutMe = user.getAboutMe();
+                model.put("aboutMe", aboutMe);
+                try {
+                    String result = amazonClient.downloadImageFromS3(imageFileName);
+                    model.put("imageFilePath", result);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             return "home";
         } else {
             return "index";

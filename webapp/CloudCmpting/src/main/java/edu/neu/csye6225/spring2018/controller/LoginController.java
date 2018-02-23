@@ -37,20 +37,15 @@ public class LoginController {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private Environment env;
+    @Value(("${AWS.status}"))
+    private String status;
 
-    public boolean isAWS() {
-        String result = env.getProperty("AWS.status");
-        if (result.equalsIgnoreCase("yyy")) {
-            System.out.println("Using AWS right now!");
-            return true;
-        } else {
-            System.out.println("Not Using AWS right now!");
-            return false;
-        }
+
+    public String path2Source(String original){
+        String result="/imgs/"+original;
+        return result;
     }
-    //checkAccount
+
     public boolean checkAccout(String email, String password) {
         User user = new User(email, password);
         ExampleMatcher matcher = ExampleMatcher.matching()
@@ -81,7 +76,7 @@ public class LoginController {
 
         System.out.println("email3" + email);
         System.out.println("rawPassword:" + rawPassword);
-        System.out.println("Is it in AWS: "+env.getProperty("AWS.status"));
+        //System.out.println("Is it in AWS: "+env.getProperty("AWS.status"));
 
         if (!userService.existsByEmail(email)) {
             errmsg = "Not yet registered";
@@ -93,7 +88,7 @@ public class LoginController {
             model.put("errmsg", errmsg);
             return "login_err";
         } else {
-            if (!isAWS()){
+            if (status.equalsIgnoreCase("nnn")){
             Date date = new Date();
             message = "Hi, " + email + " The time is: " + date.toString();
             model.put("message", message);
@@ -102,10 +97,11 @@ public class LoginController {
 //            aboutMe = user.getAboutMe();
 //            imageFilePath = user.getImageFilePath();
             model.put("aboutMe",user.getAboutMe());
-            model.put("imageFilePath", user.getImageFilePath());
+            String result=path2Source(user.getImageFilePath());
+            model.put("imageFilePath",result);
             //System.out.println("upload page session key" + imageFilePath);
 //            System.out.println(session.getAttribute(SESSION_KEY));
-            return "profile";
+
             }
             else{
                 Date date = new Date();
@@ -123,9 +119,9 @@ public class LoginController {
                 catch (IOException e) {
                     e.printStackTrace();
                 }
-                return "profile_aws";
 
             }
+            return "profile";
         }
     }
 }
