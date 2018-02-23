@@ -16,6 +16,8 @@ script:
 
 after_success:
   - pwd
+  - cd ..
+  - cd ..
   - ls -al
   - mkdir codedeploy_artifact
   - cp infrastructure/aws/codedeploy/*.sh .
