@@ -7,13 +7,47 @@ sudo: false
 install: true
 
 script:
-  - cd webapp/CloudCmpting
-  - mvn package
-  - cd ../..
+ - pwd
+ - cd webapp/CloudCmpting
+ - ls -al
+ - mvn clean package install
+ - pwd
+ - ls -al
+
+after_success:
   - pwd
+  - cd ..
+  - cd ..
+  - ls -al
+  - mkdir codedeploy_artifact
+  - cp infrastructure/aws/codedeploy/*.sh .
+  - cp infrastructure/aws/codedeploy/*.yml .
+  - zip -r csye6225-web-app-$TRAVIS_JOB_NUMBER.zip webapp/build/libs/ROOT.war *.sh *.yml
+  - ls -al
+  - mv csye6225-web-app-$TRAVIS_JOB_NUMBER.zip codedeploy_artifact/
+  - ls -al
+  - pwd
+  - cd codedeploy_artifact
+  - ls -al
+  - pwd
+  - cd ..
+  - pwd
+  - ls -al
+
+deploy:
+  - provider: s3
+    local_dir: codedeploy_artifact
+    bucket: $s3_bucket
+    region: us-east-1
+    skip_cleanup: true
+    access_key_id: $access_key_id
+    secret_access_key: $secret_access_key
+    on:
+      branch: Assignment6
 
 notifications:
   email:
     recipients:
     - xue.ti@husky.neu.edu
     - sun.rui@husky.neu.edu
+    - chai.yi@husky.edu.edu

@@ -24,7 +24,6 @@ import static edu.neu.csye6225.spring2018.WebSecurityConfig.SESSION_KEY;
 public class IndexController {
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private UserService userService;
 
