@@ -8,6 +8,7 @@ install: true
 
 script:
  - pwd
+ - cd webapp/CloudCmpting
  - ls -al
  - mvn clean package install
  - pwd
