@@ -4,8 +4,11 @@ package edu.neu.csye6225.spring2018.controller;
 import edu.neu.csye6225.spring2018.WebSecurityConfig;
 import edu.neu.csye6225.spring2018.dao.UserRepository;
 import edu.neu.csye6225.spring2018.entity.User;
+import edu.neu.csye6225.spring2018.service.AmazonClient;
 import edu.neu.csye6225.spring2018.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -22,14 +27,25 @@ import java.util.Map;
 @RequestMapping("/user/*")
 public class LoginController {
 
+    private AmazonClient amazonClient;
+
+    @Autowired
+    LoginController(AmazonClient amazonClient) {
+        this.amazonClient = amazonClient;
+    }
     @Autowired
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
+    @Value(("${AWS.status}"))
+    private String status;
 
 
+    public String path2Source(String original){
+        String result="/imgs/"+original;
+        return result;
+    }
 
-    //checkAccount
     public boolean checkAccout(String email, String password) {
         User user = new User(email, password);
         ExampleMatcher matcher = ExampleMatcher.matching()
@@ -60,6 +76,8 @@ public class LoginController {
 
         System.out.println("email3" + email);
         System.out.println("rawPassword:" + rawPassword);
+        //System.out.println("Is it in AWS: "+env.getProperty("AWS.status"));
+
         if (!userService.existsByEmail(email)) {
             errmsg = "Not yet registered";
             model.put("errmsg", errmsg);
@@ -70,6 +88,7 @@ public class LoginController {
             model.put("errmsg", errmsg);
             return "login_err";
         } else {
+            if (status.equalsIgnoreCase("nnn")){
             Date date = new Date();
             message = "Hi, " + email + " The time is: " + date.toString();
             model.put("message", message);
@@ -78,9 +97,30 @@ public class LoginController {
 //            aboutMe = user.getAboutMe();
 //            imageFilePath = user.getImageFilePath();
             model.put("aboutMe",user.getAboutMe());
-            model.put("imageFilePath", user.getImageFilePath());
+            String result=path2Source(user.getImageFilePath());
+            model.put("imageFilePath",result);
             //System.out.println("upload page session key" + imageFilePath);
 //            System.out.println(session.getAttribute(SESSION_KEY));
+
+            }
+            else{
+                Date date = new Date();
+                message = "Hi, " + email + " The time is: " + date.toString();
+                model.put("message", message);
+                session.setAttribute(WebSecurityConfig.SESSION_KEY, email);
+                User user = userService.findByEmail(email);
+                model.put("aboutMe",user.getAboutMe());
+                String imageFileName=user.getImageFilePath();
+                try{
+                    String result=amazonClient.downloadImageFromS3(imageFileName);
+                    System.out.println(result);
+                    model.put("imageFilePath",result);
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
             return "profile";
         }
     }

@@ -34,7 +34,7 @@
                 <button type="submit" value="Submit" class="btn btn-success">Search User Profile</button>
             </form>
             <div>About ME Section</div>
-            <img class="mb-4" id="imgFrame" th:src="@{'/imgs/' + ${imageFilePath}}"  alt="" width="72" height="72"/>
+            <img class="mb-4" id="imgFramew" th:src="${imageFilePath}" alt="You image is not found" width="72" height="72"/>
             <div style="text-align: center; margin-top: 2%">
                 <span id="textaboutme" th:text="${aboutMe}" name="aboutme" style= "width: 40%;height: 100px"/>
             </div>

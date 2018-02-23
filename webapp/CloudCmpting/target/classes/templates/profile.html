@@ -61,11 +61,11 @@
             <!--</div>-->
 
 
-            <img class="mb-4" id="imgFrame" th:src="@{'/imgs/' + ${imageFilePath}}" alt="" width="72" height="72"/>
+            <img class="mb-4" id="imgFramew" th:src="${imageFilePath}" alt="You image is not found" width="72" height="72"/>
 
             <div style="text-align: center; margin-top: 1%">
                 <form method="POST" action="/user/upload" enctype="multipart/form-data">
-                    <input type="file" id="file" name="file" /><br/><br/>
+                    <input type="file" id="file" accept=".png, .jpg, .jpeg" name="file" /><br/><br/>
                 <!--<button th:type="submit" value="Submit" id="upload-avatar-btn" class="btn btn-primary" style="margin-top: 1%">Upload</button>-->
                 <button th:type="button" value="go to delete" onclick="location.href='/user/deleteImgs'" name="deleteImg" id="delete-avatar-btn" class="btn btn-warning" style="margin-top: 1%">Delete</button>
             <div style="text-align: center; margin-top: 2%">
