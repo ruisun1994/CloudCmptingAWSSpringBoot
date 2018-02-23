@@ -28,6 +28,6 @@ spring:
 #S3 bucket configuration#
 amazonProperties:
   endpointUrl: https://s3.us-east-1.amazonaws.com
-  accessKey: AKIAIOXC57RQHJEVCTKQ
-  secretKey: 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
-  bucketName: csye6225-spring2018-chaiyi.me
+  accessKey: AKIAILIAF47OHEMPMSMA
+  secretKey: 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
+  bucketName: csye6225-spring2018-sunrui.me

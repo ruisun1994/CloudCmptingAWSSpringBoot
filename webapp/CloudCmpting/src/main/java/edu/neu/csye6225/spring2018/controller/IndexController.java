@@ -2,8 +2,10 @@ package edu.neu.csye6225.spring2018.controller;
 
 import edu.neu.csye6225.spring2018.dao.UserRepository;
 import edu.neu.csye6225.spring2018.entity.User;
+import edu.neu.csye6225.spring2018.service.AmazonClient;
 import edu.neu.csye6225.spring2018.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,14 +24,21 @@ import static edu.neu.csye6225.spring2018.WebSecurityConfig.SESSION_KEY;
 @RequestMapping("/user/*")
 
 public class IndexController {
+
+    private AmazonClient amazonClient;
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    IndexController(AmazonClient amazonClient) {
+        this.amazonClient = amazonClient;
+    }
+    @Value(("${AWS.status}"))
+    private String status;
 
-//    private LoginService loginService;
 
-    //index page
     @GetMapping("/user/")
     public String index(@SessionAttribute(SESSION_KEY) String email, Map<String, Object> model) {
         model.put("email", email);
@@ -84,13 +93,13 @@ public class IndexController {
         String password2 = request.getParameter("pwd2");
 //        String username = request.getParameter("username");
         String aboutMe = "";
-        String imageFilePath = "";
+        String imageFileName = "default.png";
         if (userService.existsByEmail(email)) {
             errmsg = "This email address have been registered";
             model.put("errmsg", this.errmsg);
             return "register_err";
         } else if (password.equals(password2)) {
-            User user = new User(email, password, aboutMe, imageFilePath);
+            User user = new User(email, password, aboutMe, imageFileName);
             userService.save(user);
             System.out.println("email2" + email);
 //            System.out.println(user.getPassword());
