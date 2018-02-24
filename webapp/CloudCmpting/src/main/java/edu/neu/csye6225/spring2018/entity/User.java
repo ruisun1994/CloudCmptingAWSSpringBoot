@@ -35,7 +35,6 @@ public class User {
     }
 
 
-
     public int getId() {
         return id;
     }
@@ -56,9 +55,7 @@ public class User {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public void setEmail(String email) { this.email = email; }
 
     public String getAboutMe() {
         return aboutMe;

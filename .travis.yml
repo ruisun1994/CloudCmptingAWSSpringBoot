@@ -16,6 +16,8 @@ script:
 
 after_success:
   - pwd
+  - cd ..
+  - cd ..
   - ls -al
   - mkdir codedeploy_artifact
   - cp infrastructure/aws/codedeploy/*.sh .
@@ -41,7 +43,7 @@ deploy:
     access_key_id: $access_key_id
     secret_access_key: $secret_access_key
     on:
-      branch: Lab
+      branch: Assignment6
 
 notifications:
   email:
