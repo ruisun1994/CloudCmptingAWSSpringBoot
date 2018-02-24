@@ -14,7 +14,7 @@
   "Parameters": {
     "S3BucketName": {
       "Type": "String",
-      "Default": "csye6225-spring2018-xueti.me",
+      "Default": "csye6225-spring2018-sunrui.me",
       "AllowedValues": ["csye6225-spring2018-sunrui.me", "csye6225-spring2018-xueti.me", "csye6225-spring2018-chaiyi.me"]
     }
   },
@@ -149,7 +149,7 @@
         ],
         "BlockDeviceMappings" : [
           {
-            "DeviceName" : "/dev/sdm",
+            "DeviceName" : "/dev/sda1",
             "Ebs": {
               "VolumeType" : "gp2",
               "VolumeSize" : "16",
@@ -203,13 +203,6 @@
       },
       "DeletionPolicy" : "Snapshot"
     },
-    "myApplication": {
-      "Type" : "AWS::ElasticBeanstalk::Application",
-      "Properties" : {
-         "ApplicationName" : "SampleAWSElasticBeanstalkApplication",
-         "Description" : "AWS Elastic Beanstalk Java Application"
-      }
-  },
   "myDynamoDBTable": {
     "Type" : "AWS::DynamoDB::Table",
     "Properties" : {
