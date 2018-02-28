@@ -13,55 +13,32 @@
   "Parameters": {
     "S3BucketName": {
       "Type": "String",
-      "Default": "csye6225-spring2018-sunrui.me",
+      "Default": "s3.csye6225-spring2018-sunrui.me",
       "AllowedValues": [
-        "csye6225-spring2018-sunrui.me",
-        "csye6225-spring2018-xueti.me",
-        "csye6225-spring2018-chaiyi.me"
+        "s3.csye6225-spring2018-sunrui.me",
+        "s3.csye6225-spring2018-xueti.me",
+        "s3.csye6225-spring2018-chaiyi.me"
       ]
+    },
+    "EC2ForWebKeyName": {
+      "Description": "Name of an existing EC2 key pair for SSH access to the EC2 instance.",
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "Default": "csye6225",
     }
   },
   "Resources": {
-    "InstanceSecurityGroupForWeb": {
-      "Type": "AWS::EC2::SecurityGroup",
-      "Properties": {
-        "GroupName": "csye6225-webapp",
-        "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22, HTTPS access via port 443",
-        "VpcId": {
-          "Ref": "myVPC"
-        },
-        "SecurityGroupIngress": [
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "80",
-            "ToPort": "80",
-            "CidrIp": "0.0.0.0/0"
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "22",
-            "ToPort": "22",
-            "CidrIp": "0.0.0.0/0"
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "443",
-            "ToPort": "443",
-            "CidrIp": "0.0.0.0/0"
-          }
-        ]
-      }
-    },
     "myEC2InstanceForWeb": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
         "ImageId": "ami-66506c1c",
         "InstanceType": "t2.micro",
-        "SecurityGroupIds": [
-          {
-            "Ref": "InstanceSecurityGroupForWeb"
-          }
-        ],
+        "NetworkInterfaces" : [{
+          "GroupSet" : [{"Fn::ImportValue" : "networking-SecurityGroupForWebID"}],
+          "AssociatePublicIpAddress" : "true",
+          "DeviceIndex" : "0",
+          "DeleteOnTermination" : "true",
+          "SubnetId" : {"Fn::ImportValue" : "networking-Subnet1ID"}
+        }],
         "BlockDeviceMappings": [
           {
             "DeviceName": "/dev/sda1",
@@ -72,8 +49,8 @@
             }
           }
         ],
-        "SubnetId": {
-          "Ref": "mySubnet1"
+        "IamInstanceProfile": {
+          "Ref": "myInstanceProfile"
         },
         "Tags": [
           {
@@ -90,23 +67,63 @@
               ]
             }
           }
-        ]
-      }
-    },
-    "myRDSInstanceSecurityGroup": {
-      "Type": "AWS::RDS::DBSecurityGroup",
-      "Properties": {
-        "GroupDescription": "Ingress for Amazon EC2 security group",
-        "EC2VpcId": {
-          "Ref": "myVPC"
+        ],
+        "KeyName": {
+          "Ref": "EC2ForWebKeyName"
         },
-        "DBSecurityGroupIngress": [
-          {
-            "EC2SecurityGroupId": {
-              "Ref": "InstanceSecurityGroupForWeb"
-            }
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "\n",
+              [
+                "#!/bin/bash -xe ",
+                "sudo apt-get update ",
+                "sudo apt-get install openjdk-8-jdk -y",
+                "sudo apt-get install ruby -y ",
+                "sudo apt-get install wget -y ",
+                "sudo apt-get install python -y ",
+                "sudo apt-get update ",
+                "sudo wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install ",
+                "sudo chmod +x ./install ",
+                "sudo ./install auto ",
+                "sudo service codedeploy-agent start ",
+                "sudo apt-get install tomcat8 -y ",
+                "cd /usr/share/tomcat8/bin",
+                "sudo touch setenv.sh",
+                "sudo chmod 777 setenv.sh",
+                "sudo echo '#!/bin/sh'>>setenv.sh \n",
+                {
+                  "Fn::Sub": "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.profiles.active=dev\"' >> /usr/share/tomcat8/bin/setenv.sh"
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
+                      {
+                        "Fn::GetAtt": [
+                          "myRDSInstance",
+                          "Endpoint.Address"
+                        ]
+                      },
+                      ":3306/csye6225\"'>>setenv.sh "
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Sub": "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=csye6225master\"' >> /usr/share/tomcat8/bin/setenv.sh "
+                },
+                {
+                  "Fn::Sub": "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=csye6225password\"' >> /usr/share/tomcat8/bin/setenv.sh "
+                },
+                "sudo chmod +x setenv.sh ",
+                "sudo chown tomcat8:tomcat8 setenv.sh ",
+                "sudo source setenv.sh ",
+                "sudo service tomcat8 restart "
+              ]
+            ]
           }
-        ]
+        }
       }
     },
     "myRDSInstance": {
@@ -122,8 +139,9 @@
         "MasterUsername": "csye6225master",
         "MasterUserPassword": "csye6225password",
         "PubliclyAccessible": false,
+        "VPCSecurityGroups": [{"Fn::ImportValue" : "networking-dbSecurityGroupID"}],
         "DBSubnetGroupName": {
-          "Ref": "myDBSubnetGroup"
+          "Fn::ImportValue" : "networking-myDBSubnetGroupID"
         },
         "Tags": [
           {
@@ -140,6 +158,16 @@
         "BucketName": {
           "Ref": "S3BucketName"
         }
+      }
+    },
+    "myInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          "CodeDeployEC2ServiceRole"
+        ],
+        "InstanceProfileName": "myInstanceProfileName"
       }
     }
   }

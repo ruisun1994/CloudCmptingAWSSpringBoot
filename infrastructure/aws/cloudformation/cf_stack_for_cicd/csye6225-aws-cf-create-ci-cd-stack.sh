@@ -14,7 +14,7 @@ if
 fi
 
 echo "-------Start to build the cloudformation:"
-aws cloudformation create-stack --stack-name $stackname --template-body file://csye6225-cf-ci-cd.json
+aws cloudformation create-stack --stack-name $stackname --template-body file://csye6225-cf-ci-cd.json --capabilities CAPABILITY_NAMED_IAM
 
 echo "-------Check if the cloudformation has been done sucessfully!"
 stackStatus=$(aws cloudformation describe-stacks --stack-name $stackname --query 'Stacks[0].StackStatus' --output text)
