@@ -23,7 +23,7 @@
     "EC2ForWebKeyName": {
       "Description": "Name of an existing EC2 key pair for SSH access to the EC2 instance.",
       "Type": "AWS::EC2::KeyPair::KeyName",
-      "Default": "csye6225",
+      "Default": "csye6225"
     }
   },
   "Resources": {
