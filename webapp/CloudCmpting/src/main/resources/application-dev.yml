@@ -1,0 +1,33 @@
+AWS:
+ status: yyy
+
+spring:
+ datasource:
+  url: jdbc:mysql://127.0.0.1:3306/test?useSSL=false
+  username: root
+  password: root
+  diverClassName: com.mysql.jdbc.Driver
+ jpa:
+  database: MYSQL
+  show-sql: true
+  hibernate:
+   ddl-auto: update
+   naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+  properties:
+   hibernate:
+    dialect: org.hibernate.dialect.MySQL5Dialect
+ s:
+  prefix: classpath:/templates/
+ thymeleaf:
+  cache: false
+  suffix: .html
+  mode: HTML5
+  encoding: UTF-8
+  content-type: text/html
+
+#S3 bucket configuration#
+amazonProperties:
+  endpointUrl: https://s3.us-east-1.amazonaws.com
+  accessKey: AKIAILIAF47OHEMPMSMA
+  secretKey: 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
+  bucketName: csye6225-spring2018-sunrui.me
