@@ -160,7 +160,6 @@ public class ProfileController {
         }
     }
 
-
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public String searchProfile(HttpServletRequest request, Map<String, Object> model) {
         String email = request.getParameter("email");
