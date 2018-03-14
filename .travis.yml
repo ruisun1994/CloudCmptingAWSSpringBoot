@@ -1,29 +1,28 @@
 language: java
 jdk:
-  - openjdk8
+  - oraclejdk8
 
-
-sudo: false
+sudo: true
 install: true
 
 script:
- - pwd
- - cd webapp/CloudCmpting
- - ls -al
- - mvn clean package install
- - pwd
- - ls -al
+  - pwd
+  - ls -al
+  - mvn clean package -DskipTests
+  - cd target/
+  - ls -al
+  - cd ../
+  - pwd
+  - ls -al
 
 after_success:
   - pwd
-  - cd ..
-  - cd ..
   - ls -al
   - mkdir codedeploy_artifact
   - cp infrastructure/aws/codedeploy/*.sh .
   - cp infrastructure/aws/codedeploy/*.yml .
-  - mv webapp/CloudCmpting/target/cloudcomputing-0.0.1-SNAPSHOT.war webapp/CloudCmpting/target/ROOT.war
-  - zip -r csye6225-web-app-$TRAVIS_JOB_NUMBER.zip webapp/CloudCmpting/target/ROOT.war *.sh *.yml
+  - mv target/cloudcomputing-0.0.1-SNAPSHOT.war target/ROOT.war
+  - zip -r csye6225-web-app-$TRAVIS_JOB_NUMBER.zip target/ROOT.war *.sh *.yml
   - ls -al
   - mv csye6225-web-app-$TRAVIS_JOB_NUMBER.zip codedeploy_artifact/
   - ls -al
@@ -38,7 +37,7 @@ after_success:
 deploy:
   - provider: s3
     local_dir: codedeploy_artifact
-    bucket: $s3_bucket
+    bucket: $codedeploy_bucket
     region: us-east-1
     skip_cleanup: true
     access_key_id: $access_key_id
@@ -47,7 +46,7 @@ deploy:
       branch: assignment6
   - provider: codedeploy
     access_key_id: $access_key_id
-    bucket: $s3_bucket
+    bucket: $codedeploy_bucket
     key: csye6225-web-app-$TRAVIS_JOB_NUMBER.zip
     bundle_type: zip
     application: $application
@@ -58,9 +57,3 @@ deploy:
     on:
       branch: assignment6
 
-notifications:
-  email:
-    recipients:
-    - xue.ti@husky.neu.edu
-    - sun.rui@husky.neu.edu
-    - chai.yi@husky.edu.edu
