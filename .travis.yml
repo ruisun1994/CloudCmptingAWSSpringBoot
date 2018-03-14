@@ -22,7 +22,8 @@ after_success:
   - mkdir codedeploy_artifact
   - cp infrastructure/aws/codedeploy/*.sh .
   - cp infrastructure/aws/codedeploy/*.yml .
-  - zip -r csye6225-web-app-$TRAVIS_JOB_NUMBER.zip webapp/CloudCmpting/target/cloudcomputing-0.0.1-SNAPSHOT.war *.sh *.yml
+  - mv webapp/CloudCmpting/target/cloudcomputing-0.0.1-SNAPSHOT.war webapp/CloudCmpting/target/ROOT.war
+  - zip -r csye6225-web-app-$TRAVIS_JOB_NUMBER.zip webapp/CloudCmpting/target/ROOT.war *.sh *.yml
   - ls -al
   - mv csye6225-web-app-$TRAVIS_JOB_NUMBER.zip codedeploy_artifact/
   - ls -al

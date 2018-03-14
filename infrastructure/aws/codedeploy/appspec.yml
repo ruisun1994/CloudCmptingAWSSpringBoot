@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 
 files:
-  - source: ./webapp/CloudCmpting/target/cloudcomputing-0.0.1-SNAPSHOT.war
+  - source: ./webapp/CloudCmpting/target/ROOT.war
     destination: /var/lib/tomcat8/webapps
 
 hooks:
