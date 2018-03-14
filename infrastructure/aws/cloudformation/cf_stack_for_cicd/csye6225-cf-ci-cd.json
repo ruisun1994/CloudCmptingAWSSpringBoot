@@ -20,7 +20,7 @@
     "CodeDeployEC2S3": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "ManagedPolicyName": "CodeDeploy-EC2-S3",
+        "PolicyName": "CodeDeploy-EC2-S3",
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
@@ -46,8 +46,8 @@
     "TravisUploadToS3": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "Users" : ["travis"],
-        "ManagedPolicyName": "Travis-Upload-To-S3",
+        "Users" : ["csye6225_admin"],
+        "PolicyName": "Travis-Upload-To-S3",
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
@@ -67,8 +67,8 @@
     "TravisCodeDeploy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "Users" : ["travis"],
-        "ManagedPolicyName": "Travis-Code-Deploy",
+        "Users" : ["csye6225_admin"],
+        "PolicyName": "Travis-Code-Deploy",
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
