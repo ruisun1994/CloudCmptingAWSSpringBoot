@@ -1,41 +1,18 @@
 #!/bin/bash
 
-echo "-------Enter The Stack Name:"
+echo "Enter The Stack Name:"
 read stackname
 
-echo
-echo "-------Test if the Stack existed:"
-stack_Id=$(aws cloudformation describe-stacks --stack-name "$stackname" --query 'Stacks[0].StackId' --output text)
-echo $stack_Id
-if
-	[ "$stack_Id" != "" ]; then
-	echo "Stack has already existed, terminate first!"
-	exit 0
-fi
 
-echo "-------Start to build the cloudformation:"
-aws cloudformation create-stack --stack-name $stackname --template-body file://csye6225-cf-ci-cd.json
+vpcId=$(aws ec2 describe-vpcs --filters "Name=cidr-block-association.cidr-block,Values=10.0.0.0/16" --query "Vpcs[0].VpcId" --output text)
+echo $vpcId
+subnetId=$(aws ec2 describe-subnets --filters "Name=cidrBlock,Values=10.0.0.0/24" --query "Subnets[0].SubnetId" --output text)
+instanceName="$stackname-csye6225-instance"
+echo $subnetId
 
-echo "-------Check if the cloudformation has been done sucessfully!"
-stackStatus=$(aws cloudformation describe-stacks --stack-name $stackname --query 'Stacks[0].StackStatus' --output text)
 
-while [[ "$stackStatus" != "CREATE_COMPLETE" ]]
-do
-	stackStatus=$(aws cloudformation describe-stacks --stack-name $stackname --query 'Stacks[0].StackStatus' --output text)
-	echo "Please wait a moment!"
-	echo $stackStatus
-	if [ "$stackStatus" == "ROLLBACK_IN_PROGRESS" ];then
-	break
-  fi
-	sleep 3
-done
+aws cloudformation create-stack --template-body file://./csye6225-cf-ci-cd.json --stack-name ${stackname} --capabilities "CAPABILITY_NAMED_IAM" --parameters ParameterKey=InstanceName,ParameterValue=$instanceName ParameterKey=SubnetId,ParameterValue=$subnetId
 
-if [ "$stackStatus" == "CREATE_COMPLETE" ]; then
-	#statements
-	echo "cloudformation sucessfully!"
-	exit 0
-else
-	echo "failed"
-	aws cloudformation delete-stack --stack-name "$stackname"
-	exit 0
-fi
+
+aws cloudformation wait stack-create-complete --stack-name ${stackname}
+echo done

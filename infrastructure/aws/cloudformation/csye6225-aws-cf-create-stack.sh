@@ -1,57 +1,16 @@
 #!/bin/bash
 
-echo "-------Enter The Stack Name:"
 
-<<<<<<< HEAD
-echo "-------Start to build the cloudformation:"
-aws cloudformation create-stack --stack-name $1 --template-body file://csye6225-cf-networking.json
+echo "Enter The Stack Name:"
+read stackname
 
-echo "-------Check if the cloudformation has been done sucessfully!"
-stackStatus=$(aws cloudformation describe-stacks --stack-name $1 --query 'Stacks[0].StackStatus' --output text)
-echo $stackStatus
+VpcName="$stackname-csye6225-vpc"
+GatewayName="$stackname-csye6225-InternetGateway"
+RouteTableName="$stackname-csye6225-public-route-table"
+PrivateRouteTableName="$stackname-csye6225-private-route-table"
 
-sleep 100
-stackStatus=$(aws cloudformation describe-stacks --stack-name $1 --query 'Stacks[0].StackStatus' --output text)
+aws cloudformation create-stack --stack-name ${stackname} --template-body file://./csye6225-cf-networking.json --parameters ParameterKey=vpcName,ParameterValue=$VpcName ParameterKey=gatewayName,ParameterValue=$GatewayName ParameterKey=routeTableName,ParameterValue=$RouteTableName ParameterKey=privaterouteTableName,ParameterValue=$PrivateRouteTableName
 
-if [ "$stackStatus" == "CREATE_COMPLETE" ]; then
-	#statements
-	echo "cloudformation sucessfully!"
-	exit 0
-else
-	echo "failed"
-	exit 0
-fi
-=======
-echo
-echo "-------Test if the Stack existed:"
-stack_Id=$(aws cloudformation describe-stacks --stack-name "$stackname" --query 'Stacks[0].StackId' --output text)
-echo $stack_Id
-if 
-	[ "$stack_Id" != "" ]; then
-	echo "Stack has already existed, terminate first!"
-	exit 0
-fi
+aws cloudformation wait stack-create-complete --stack-name ${stackname}
 
-echo "-------Start to build the cloudformation:"
-aws cloudformation create-stack --stack-name $stackname --template-body file://csye6225-cf-networking.json
-
-echo "-------Check if the cloudformation has been done sucessfully!"
-stackStatus=$(aws cloudformation describe-stacks --stack-name $stackname --query 'Stacks[0].StackStatus' --output text)
-
-while [[ "$stackStatus" != "CREATE_COMPLETE" && "$stackStatus" != "ROLLBACK_COMPLETE" ]]
-do
-	stackStatus=$(aws cloudformation describe-stacks --stack-name $stackname --query 'Stacks[0].StackStatus' --output text)
-	echo "Please wait a moment!"
-	echo $stackStatus
-	sleep 3
-done
-
-if [ "$stackStatus" == "CREATE_COMPLETE" ]; then
-	#statements
-	echo "cloudformation sucessfully!"
-	exit 0
-else
-	echo "failed"
-	exit 0
-fi
->>>>>>> 5c60689443bb356a3518688f529ba947a5f22eee
+echo done

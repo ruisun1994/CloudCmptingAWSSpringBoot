@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 
-files:
+files:             
   - source: ./target/ROOT.war
     destination: /var/lib/tomcat8/webapps
 
@@ -18,11 +18,11 @@ hooks:
    - location: ./validateService.sh
      timeout: 180
      runas: ubuntu
-  # ApplicationStop:
-  #  - location: ./applicationStop.sh
-  #    timeout: 180
-  #    runas: ubuntu
-  # BeforeInstall:
-  #  - location: ./beforeInstall.sh
-  #    timeout: 180
-  #    runas: ubuntu
+  ApplicationStop:
+   - location: ./applicationStop.sh
+     timeout: 180
+     runas: ubuntu
+  BeforeInstall:
+   - location: ./beforeInstall.sh
+     timeout: 180
+     runas: ubuntu
