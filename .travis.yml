@@ -55,7 +55,7 @@ deploy:
     secret_access_key: $secret_access_key
     wait-until-deployed: true
     on:
-      branch: Assignment6
+      branch: assignment6
 
 notifications:
   email:
