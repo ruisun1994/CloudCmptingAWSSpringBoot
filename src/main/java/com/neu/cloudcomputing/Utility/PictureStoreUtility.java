@@ -15,8 +15,6 @@ public class PictureStoreUtility {
 
     public static File convertFromMultipart(MultipartFile file) throws Exception {
         File newFile = new File(pictureLocalPath + file.getOriginalFilename());
-        //System.out.println(newFile);
-        //Files.createTempFile(file.getOriginalFilename(),"");
         newFile.createNewFile();
         FileOutputStream fs = new FileOutputStream(newFile);
         fs.write(file.getBytes());

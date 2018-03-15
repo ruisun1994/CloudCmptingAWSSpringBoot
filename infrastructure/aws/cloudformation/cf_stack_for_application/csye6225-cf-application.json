@@ -96,6 +96,8 @@
                 "sudo ./install auto ",
                 "sudo service codedeploy-agent start ",
                 "sudo apt-get install tomcat8 -y ",
+		"sudo mkdir /var/tempimage\n",
+		"sudo chown -R ubuntu /var/tempimage\n",
                 "sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -Dspring.datasource.username=csye6225master -Dspring.datasource.password=csye6225password  -Dspring.profiles.active=aws\\\"\" >> /etc/default/tomcat8 ",
                 {
                   "Fn::Join": [

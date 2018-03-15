@@ -8,14 +8,30 @@
     <title>Sign up</title>
 </head>
 <body class="text-center">
-<form class="form-signup" action="/user/signupvalidate" method="POST">
-    <img class="mb-4" src="https://d28htnjz2elwuj.cloudfront.net/wp-content/uploads/2013/11/Northeastern_University_Logo.jpg" alt="" width="72" height="72">
-    <h1 class="h3 mb-3 font-weight-normal">Please sign up</h1>
-    <input name="username" id="inputEmail" class="form-control mb-3" placeholder="Email address" required="" autofocus="" type="email">
-    <input name="password" id="inputPassword" class="form-control" placeholder="Password" required="" type="password">
-    <input type="hidden" name="username" value="" />
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
-    <p class="mt-5 mb-3 text-muted">&copy;CSYE6225</p>
-</form>
+
+<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link active" href="/">Home</a>
+                <a class="nav-link active" href="/user/signup">Sign Up</a>
+                <a class="nav-link active" href="/user/signin">Sign In</a>
+            </nav>
+        </div>
+    </header>
+
+    <main role="main" class="inner cover">
+        <div class="container" style="text-align: center; width: 30%; margin-top: 5%">
+            <form class="form-signup" action="/user/signupvalidate" method="POST">
+                <input name="username" id="inputEmail" class="form-control mb-3" placeholder="Email address" required="" autofocus="" type="email">
+                <input name="password" id="inputPassword" class="form-control" placeholder="Password" required="" type="password">
+                <input type="hidden" name="username" value="" />
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+                <p class="mt-5 mb-3 text-muted">&copy;CSYE6225</p>
+            </form>
+        </div>
+    </main>
+
+</div>
 </body>
 </html>
