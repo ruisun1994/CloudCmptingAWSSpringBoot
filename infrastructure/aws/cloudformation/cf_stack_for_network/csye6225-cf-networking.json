@@ -167,6 +167,12 @@
         "SecurityGroupIngress": [
           {
             "IpProtocol": "tcp",
+            "FromPort": "8080",
+            "ToPort": "8080",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
             "FromPort": "80",
             "ToPort": "80",
             "CidrIp": "0.0.0.0/0"
@@ -198,7 +204,7 @@
             "IpProtocol": "tcp",
             "FromPort": "3306",
             "ToPort": "3306",
-            "CidrIp": "0.0.0.0/0"
+            "SourceSecurityGroupId" : {"Ref":"EC2SecurityGroupForWeb"}
           }
         ]
       }
@@ -245,19 +251,6 @@
       "Properties": {
         "RouteTableId": {
           "Ref": "myPublicRouteTable"
-        },
-        "DestinationCidrBlock": "0.0.0.0/0",
-        "GatewayId": {
-          "Ref": "myInternetGateway"
-        }
-      }
-    },
-    "myDBServerRoute": {
-      "Type": "AWS::EC2::Route",
-      "DependsOn": "myAttachGateway",
-      "Properties": {
-        "RouteTableId": {
-          "Ref": "myPrivateRouteTable"
         },
         "DestinationCidrBlock": "0.0.0.0/0",
         "GatewayId": {

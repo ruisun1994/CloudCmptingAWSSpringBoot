@@ -1,0 +1,18 @@
+profile: aws
+
+cloud:
+  aws:
+    region:
+      static: us-east-1
+
+spring:
+  security:
+    enable: false
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect

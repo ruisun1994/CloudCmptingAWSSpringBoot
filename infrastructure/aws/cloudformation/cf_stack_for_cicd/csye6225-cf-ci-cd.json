@@ -18,19 +18,21 @@
   },
   "Resources": {
     "CodeDeployEC2S3": {
-      "Type": "AWS::IAM::ManagedPolicy",
+      "Type": "AWS::IAM::Policy",
       "Properties": {
-        "ManagedPolicyName": "CodeDeploy-EC2-S3",
+        "PolicyName": "CodeDeploy-EC2-S3",
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
             {
               "Action": [
                 "s3:Get*",
-                "s3:List*"
+                "s3:List*",
+                "s3:Put*",
+                "s3:Delete*"
               ],
               "Effect": "Allow",
-              "Resource": "*"
+              "Resource": "arn:aws:s3:::*"
             }
           ]
         },
@@ -42,9 +44,10 @@
       }
     },
     "TravisUploadToS3": {
-      "Type": "AWS::IAM::ManagedPolicy",
+      "Type": "AWS::IAM::Policy",
       "Properties": {
-        "ManagedPolicyName": "Travis-Upload-To-S3",
+        "Users" : ["csye6225_admin"],
+        "PolicyName": "Travis-Upload-To-S3",
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
@@ -54,7 +57,7 @@
                 "s3:PutObject"
               ],
               "Resource": [
-                "*"
+                "arn:aws:s3:::*"
               ]
             }
           ]
@@ -62,9 +65,10 @@
       }
     },
     "TravisCodeDeploy": {
-      "Type": "AWS::IAM::ManagedPolicy",
+      "Type": "AWS::IAM::Policy",
       "Properties": {
-        "ManagedPolicyName": "Travis-Code-Deploy",
+        "Users" : ["csye6225_admin"],
+        "PolicyName": "Travis-Code-Deploy",
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/userindex.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <title>User Index</title>
+    <script>
+        var imageExtentions = ["jpg", "png", "jpeg"];
+        function checkFileType() {
+            var flag = imageExtentions.indexOf(document.getElementById("profilepicture").value.split(".").pop());
+            if (flag == -1) {
+                alert("Invalid picture format!");
+                return false;
+            }
+            return true;
+        }
+
+    </script>
+</head>
+<body class="text-center">
+
+<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link active" href="/">Home</a>
+                <a class="nav-link active" href="/user/signup">Sign Up</a>
+                <a class="nav-link active" href="/user/signin">Sign In</a>
+            </nav>
+        </div>
+    </header>
+
+    <main role="main" class="inner cover">
+        <div class="container" style="text-align: center;  width: 30%; margin-top: 5%">
+            <h1>Hello <span th:text="${user}"></span></h1>
+            <h6 th:text="${currentTime}"></h6>
+            <img width="200" height="200" alt="No Picture" th:src="@{'data:img/png;base64,'+${userProfile}}"></h6>
+            <form action="/user/uploadpicture" method="POST" enctype="multipart/form-data">
+                <input class="form-control" type="file" id="profilepicture" name="profilepicture" >
+                <button class="btn btn-primary" type="submit" style="margin-top: 1%" onclick="window.location.href='/user/deletepicture'">Delete</button>
+                <button class="btn btn-primary" type="submit" style="margin-top: 1%" onclick="return checkFileType()">Upload</button>
+            </form>
+            <form action="/user/uploadaboutme" style="margin-top: 2%" method="POST">
+                <input class="form-control" type="text" id="aboutme" name="aboutme" maxlength="140" th:value="${aboutMe}"  >
+                <button class="btn btn-primary" type="submit" style="margin-top: 1%" onclick="window.location.href='/user/uploadaboutme'">Upload</button>
+            </form>
+            <button class="btn btn-primary" type="submit" style="margin-top: 1%" onclick="window.location.href='/user/logout'">logout</button>
+        </div>
+    </main>
+
+</div>
+</body>
+</html>

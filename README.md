@@ -2,11 +2,11 @@
 
 #### Team Members:
 ````
-Rui Sun rui.sun@northeastern.edu
+Rui Sun, rui.sun@northeastern.edu
 
-Yi Chai chai.yi@northeastern.edu
+Yi Chai, chai.yi@northeastern.edu
 
-Tianjiao Xue xue.ti@northeastern.edu
+Tianjiao, Xue xue.ti@northeastern.edu
 ````
 #### Prerequisite for building and deploying application locally
 ````

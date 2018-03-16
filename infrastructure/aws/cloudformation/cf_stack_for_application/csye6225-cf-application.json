@@ -23,7 +23,7 @@
     "EC2ForWebKeyName": {
       "Description": "Name of an existing EC2 key pair for SSH access to the EC2 instance.",
       "Type": "AWS::EC2::KeyPair::KeyName",
-      "Default": "csye6225",
+      "Default": "csye6225"
     }
   },
   "Resources": {
@@ -32,13 +32,21 @@
       "Properties": {
         "ImageId": "ami-66506c1c",
         "InstanceType": "t2.micro",
-        "NetworkInterfaces" : [{
-          "GroupSet" : [{"Fn::ImportValue" : "networking-SecurityGroupForWebID"}],
-          "AssociatePublicIpAddress" : "true",
-          "DeviceIndex" : "0",
-          "DeleteOnTermination" : "true",
-          "SubnetId" : {"Fn::ImportValue" : "networking-Subnet1ID"}
-        }],
+        "NetworkInterfaces": [
+          {
+            "GroupSet": [
+              {
+                "Fn::ImportValue": "networking-SecurityGroupForWebID"
+              }
+            ],
+            "AssociatePublicIpAddress": "true",
+            "DeviceIndex": "0",
+            "DeleteOnTermination": "true",
+            "SubnetId": {
+              "Fn::ImportValue": "networking-Subnet1ID"
+            }
+          }
+        ],
         "BlockDeviceMappings": [
           {
             "DeviceName": "/dev/sda1",
@@ -88,37 +96,24 @@
                 "sudo ./install auto ",
                 "sudo service codedeploy-agent start ",
                 "sudo apt-get install tomcat8 -y ",
-                "cd /usr/share/tomcat8/bin",
-                "sudo touch setenv.sh",
-                "sudo chmod 777 setenv.sh",
-                "sudo echo '#!/bin/sh'>>setenv.sh \n",
-                {
-                  "Fn::Sub": "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.profiles.active=dev\"' >> /usr/share/tomcat8/bin/setenv.sh"
-                },
+		"sudo mkdir /var/tempimage\n",
+		"sudo chown -R ubuntu /var/tempimage\n",
+                "sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -Dspring.datasource.username=csye6225master -Dspring.datasource.password=csye6225password  -Dspring.profiles.active=aws\\\"\" >> /etc/default/tomcat8 ",
                 {
                   "Fn::Join": [
                     "",
                     [
-                      "sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
+                      "echo 'JAVA_OPTS=\"${JAVA_OPTS} -Dspring.datasource.url=\\\"jdbc:mysql://",
                       {
                         "Fn::GetAtt": [
                           "myRDSInstance",
                           "Endpoint.Address"
                         ]
                       },
-                      ":3306/csye6225\"'>>setenv.sh "
+                      ":3306/csye6225\\\"\"' >> /etc/default/tomcat8"
                     ]
                   ]
                 },
-                {
-                  "Fn::Sub": "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=csye6225master\"' >> /usr/share/tomcat8/bin/setenv.sh "
-                },
-                {
-                  "Fn::Sub": "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=csye6225password\"' >> /usr/share/tomcat8/bin/setenv.sh "
-                },
-                "sudo chmod +x setenv.sh ",
-                "sudo chown tomcat8:tomcat8 setenv.sh ",
-                "sudo source setenv.sh ",
                 "sudo service tomcat8 restart "
               ]
             ]
@@ -129,8 +124,8 @@
     "myRDSInstance": {
       "Type": "AWS::RDS::DBInstance",
       "Properties": {
-        "DBName": "myRDSInstance",
-        "AllocatedStorage": "100",
+        "DBName": "csye6225",
+        "AllocatedStorage": "10",
         "DBInstanceClass": "db.t2.medium",
         "MultiAZ": false,
         "DBInstanceIdentifier": "csye6225-spring2018",
@@ -139,9 +134,13 @@
         "MasterUsername": "csye6225master",
         "MasterUserPassword": "csye6225password",
         "PubliclyAccessible": false,
-        "VPCSecurityGroups": [{"Fn::ImportValue" : "networking-dbSecurityGroupID"}],
+        "VPCSecurityGroups": [
+          {
+            "Fn::ImportValue": "networking-dbSecurityGroupID"
+          }
+        ],
         "DBSubnetGroupName": {
-          "Fn::ImportValue" : "networking-myDBSubnetGroupID"
+          "Fn::ImportValue": "networking-myDBSubnetGroupID"
         },
         "Tags": [
           {

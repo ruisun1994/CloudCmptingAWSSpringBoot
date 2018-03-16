@@ -1,0 +1,25 @@
+profile: default
+
+cloud:
+  aws:
+    region:
+      static: us-east-1
+
+spring:
+  security:
+    enable: false
+  profiles:
+    active: aws
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/csye6225?useSSL=false
+    username: root
+ #   password: root
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
