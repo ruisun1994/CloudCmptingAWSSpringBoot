@@ -13,7 +13,7 @@
   "Parameters": {
     "S3BucketName": {
       "Type": "String",
-      "Default": "s3.csye6225-spring2018-sunrui.me",
+      "Default": "s3.csye6225-spring2018-xueti.me",
       "AllowedValues": [
         "s3.csye6225-spring2018-sunrui.me",
         "s3.csye6225-spring2018-xueti.me",
@@ -97,7 +97,7 @@
                 "sudo service codedeploy-agent start ",
                 "sudo apt-get install tomcat8 -y ",
 		"sudo mkdir /var/tempimage\n",
-		"sudo chown -R ubuntu /var/tempimage\n",
+		"sudo chown -R tomcat8 /var/tempimage\n",
                 "sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -Dspring.datasource.username=csye6225master -Dspring.datasource.password=csye6225password  -Dspring.profiles.active=aws\\\"\" >> /etc/default/tomcat8 ",
                 {
                   "Fn::Join": [
