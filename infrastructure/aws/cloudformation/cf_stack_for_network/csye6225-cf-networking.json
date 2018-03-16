@@ -156,7 +156,7 @@
         }
       }
     },
-    "InstanceSecurityGroupForWeb": {
+    "EC2SecurityGroupForWeb": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupName": "csye6225-webapp",
@@ -186,18 +186,19 @@
         ]
       }
     },
-    "myRDSInstanceSecurityGroup": {
-      "Type": "AWS::RDS::DBSecurityGroup",
+    "dbSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
-        "GroupDescription": "Ingress for Amazon EC2 security group",
-        "EC2VpcId": {
+        "GroupDescription": "db security group",
+        "VpcId": {
           "Ref": "myVPC"
         },
-        "DBSecurityGroupIngress": [
+        "SecurityGroupIngress": [
           {
-            "EC2SecurityGroupId": {
-              "Ref": "InstanceSecurityGroupForWeb"
-            }
+            "IpProtocol": "tcp",
+            "FromPort": "3306",
+            "ToPort": "3306",
+            "CidrIp": "0.0.0.0/0"
           }
         ]
       }
@@ -237,6 +238,69 @@
           }
         ]
       }
+    },
+    "myWebServerRoute": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "myAttachGateway",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "myPublicRouteTable"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "myInternetGateway"
+        }
+      }
+    },
+    "myDBServerRoute": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "myAttachGateway",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "myPrivateRouteTable"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "myInternetGateway"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "mySubnet1": {
+      "Description": "Subnet1 Id",
+      "Value": {
+        "Ref": "mySubnet1"
+      },
+      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-Subnet1ID" }}
+    },
+    "mySubnet2": {
+      "Description": "Subnet2 Id",
+      "Value": {
+        "Ref": "mySubnet2"
+      },
+      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-Subnet2ID" }}
+    },
+    "EC2SecurityGroupForWeb": {
+      "Description": "The security group ID to use for public web servers",
+      "Value": {
+        "Fn::GetAtt" : ["EC2SecurityGroupForWeb", "GroupId"]
+      },
+      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-SecurityGroupForWebID" }}
+    },
+    "dbSecurityGroup": {
+      "Description": "dbSecurityGroup Id",
+      "Value": {
+        "Fn::GetAtt" : ["dbSecurityGroup", "GroupId"]
+      },
+      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-dbSecurityGroupID" }}
+    },
+    "myDBSubnetGroup": {
+      "Description": "myDBSubnetGroup Id",
+      "Value": {
+        "Ref": "myDBSubnetGroup"
+      },
+      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-myDBSubnetGroupID" }}
     }
   }
 }
