@@ -25,8 +25,9 @@ do
 	echo "Please wait a moment!"
 	echo $stackStatus
 	if [ "$stackStatus" == "ROLLBACK_IN_PROGRESS" ];then
-	break
-  fi
+		break
+	fi
+
 	sleep 3
 done
 
