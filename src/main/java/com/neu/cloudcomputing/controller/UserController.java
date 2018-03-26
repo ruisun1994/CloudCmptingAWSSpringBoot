@@ -110,7 +110,7 @@ public class UserController {
         //select profiles
         String envir = env.getProperty("profile");
         if (envir.equals("default")) {
-            String picturePath = PictureStoreUtility.pictureApplicationPath + loggedUser.getProfile();
+            String picturePath = PictureStoreUtility.pictureApplicationAbsolutePath + loggedUser.getProfile();
             mav.addObject("userProfile", picturePath);
             mav.setViewName("userindexlocal");
             return mav;
