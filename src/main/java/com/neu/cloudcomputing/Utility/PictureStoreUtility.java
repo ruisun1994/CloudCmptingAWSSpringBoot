@@ -10,7 +10,7 @@ public class PictureStoreUtility {
 
     public static final String pictureLocalPath = "/var/tempimage/";
     public static final String pictureApplicationPath = "/css/images/";
-    public static final String pictureApplicationAbsolutePath = "/home/sunrui/csye6225/dev/csye6225-spring2018/src/main/resources/static/css/images";
+    public static final String pictureApplicationAbsolutePath = "/home/csye6225/dev/csye6225-spring2018/src/main/resources/static/css/images";
 
 
     public static File convertFromMultipart(MultipartFile file) throws Exception {
