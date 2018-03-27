@@ -1,9 +1,11 @@
 package com.neu.cloudcomputing.controller;
 
+import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.CreateTopicRequest;
 import com.amazonaws.services.sns.model.CreateTopicResult;
 import com.amazonaws.services.sns.model.SubscribeRequest;
@@ -288,20 +290,20 @@ public class UserController {
         return new ModelAndView("index");
     }
 
-    @GetMapping(value = "/forgetPassword")
-    public ModelAndView forgetPassword(){
-        //create a new SNS client and set endpoint
-        AmazonSNSClient snsClient = new AmazonSNSClient(new ClasspathPropertiesFileCredentialsProvider());
-        snsClient.setRegion(Region.getRegion(Regions.US_EAST_1));
-        //create a new SNS topic
-        CreateTopicRequest createTopicRequest = new CreateTopicRequest("MyNewTopic");
-        CreateTopicResult createTopicResult = snsClient.createTopic(createTopicRequest);
-        //print TopicArn
-        System.out.println(createTopicResult);
-        //get request id for CreateTopicRequest from SNS metadata
-        System.out.println("CreateTopicRequest - " + snsClient.getCachedResponseMetadata(createTopicRequest));
+    @GetMapping(value = "/forgotPassword")
+    public ModelAndView forgotPassword(HttpServletRequest request, HttpServletResponse response) {
+        return new ModelAndView("forgotPassword");
+    }
 
-        return new ModelAndView("profile");
+    @RequestMapping(value = "/resetPassword", method = {RequestMethod.GET, RequestMethod.POST})
+    public ModelAndView forgetPassword(HttpSession session, @RequestParam("email") String email){
+        //create a new SNS client and set endpoint
+        AmazonSNS snsClient = AmazonSNSClientBuilder.defaultClient();
+        String msg = email;
+        String topicArn = snsClient.createTopic("password reset").getTopicArn();
+        PublishRequest publishRequest = new PublishRequest(topicArn, msg);
+        PublishResult publicResult = snsClient.publish(publishRequest);
+        return new ModelAndView("index");
     }
 
 }
