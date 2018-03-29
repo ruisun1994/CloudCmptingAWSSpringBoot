@@ -1,5 +1,17 @@
 package com.neu.cloudcomputing.controller;
 
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sns.model.CreateTopicRequest;
+import com.amazonaws.services.sns.model.CreateTopicResult;
+import com.amazonaws.services.sns.model.SubscribeRequest;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
+import com.amazonaws.services.sns.model.DeleteTopicRequest;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
@@ -110,7 +122,7 @@ public class UserController {
         //select profiles
         String envir = env.getProperty("profile");
         if (envir.equals("default")) {
-            String picturePath = PictureStoreUtility.pictureApplicationPath + loggedUser.getProfile();
+            String picturePath = PictureStoreUtility.pictureApplicationAbsolutePath + loggedUser.getProfile();
             mav.addObject("userProfile", picturePath);
             mav.setViewName("userindexlocal");
             return mav;
@@ -275,6 +287,22 @@ public class UserController {
             session.setAttribute("user", null);
         }
         session.invalidate();
+        return new ModelAndView("index");
+    }
+
+    @GetMapping(value = "/forgotPassword")
+    public ModelAndView forgotPassword(HttpServletRequest request, HttpServletResponse response) {
+        return new ModelAndView("forgotPassword");
+    }
+
+    @RequestMapping(value = "/resetPassword", method = {RequestMethod.GET, RequestMethod.POST})
+    public ModelAndView forgetPassword(HttpSession session, @RequestParam("email") String email){
+        //create a new SNS client and set endpoint
+        AmazonSNS snsClient = AmazonSNSClientBuilder.defaultClient();
+        String msg = email;
+        String topicArn = snsClient.createTopic("password reset").getTopicArn();
+        PublishRequest publishRequest = new PublishRequest(topicArn, msg);
+        PublishResult publicResult = snsClient.publish(publishRequest);
         return new ModelAndView("index");
     }
 
