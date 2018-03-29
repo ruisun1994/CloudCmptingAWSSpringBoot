@@ -13,7 +13,7 @@
   "Parameters": {
     "S3BucketName": {
       "Type": "String",
-      "Default": "s3.csye6225-spring2018-sunrui.me",
+      "Default": "s3.csye6225-spring2018-xueti.me",
       "AllowedValues": [
         "s3.csye6225-spring2018-sunrui.me",
         "s3.csye6225-spring2018-xueti.me",
@@ -27,6 +27,146 @@
     }
   },
   "Resources": {
+    "LogRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyName": "LogRolePolicy",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                      "logs:Create*",
+                                      "logs:PutLogEvents",
+                                      "s3:GetObject"
+                                    ],     
+                                    "Resource": [
+                                        "arn:aws:logs:*:*:*",
+                                        "arn:aws:s3:::*"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+     },
+    "LogRoleInstanceProfile": {
+            "Type": "AWS::IAM::InstanceProfile",
+            "Properties": {
+                "Path": "/",
+                "Roles": [
+                    {
+                        "Ref": "LogRole"
+                    }
+                ]
+            }
+     },
+     "WebServerLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+                "RetentionInDays": 7
+            }
+      },
+      "404MetricFilter": {
+            "Type": "AWS::Logs::MetricFilter",
+            "Properties": {
+                "LogGroupName": {
+                    "Ref": "WebServerLogGroup"
+                },
+                "FilterPattern": "[ip, identity, user_id, timestamp, request, status_code = 404, size, ...]",
+                "MetricTransformations": [
+                    {
+                        "MetricValue": "1",
+                        "MetricNamespace": "test/404s",
+                        "MetricName": "test404Count"
+                    }
+                ]
+            }
+       },
+       "BytesTransferredMetricFilter": {
+            "Type": "AWS::Logs::MetricFilter",
+            "Properties": {
+                "LogGroupName": {
+                    "Ref": "WebServerLogGroup"
+                },
+                "FilterPattern": "[ip, identity, user_id, timestamp, request, status_code, size, ...]",
+                "MetricTransformations": [
+                    {
+                        "MetricValue": "$size",
+                        "MetricNamespace": "test/BytesTransferred",
+                        "MetricName": "testBytesTransferred"
+                    }
+                ]
+            }
+       },
+       "404Alarm": {
+            "Type": "AWS::CloudWatch::Alarm",
+            "Properties": {
+                "AlarmDescription": "The number of 404s is greater than 2 over 2 minutes",
+                "MetricName": "test404Count",
+                "Namespace": "test/404s",
+                "Statistic": "Sum",
+                "Period": "60",
+                "EvaluationPeriods": "2",
+                "Threshold": "2",
+                "AlarmActions": [
+                    {
+                        "Ref": "AlarmNotificationTopic"
+                    }
+                ],
+                "ComparisonOperator": "GreaterThanThreshold"
+            }
+       },
+       "BandwidthAlarm": {
+            "Type": "AWS::CloudWatch::Alarm",
+            "Properties": {
+                "AlarmDescription": "The average volume of traffic is greater 3500 KB over 10 minutes",
+                "MetricName": "testBytesTransferred",
+                "Namespace": "test/BytesTransferred",
+                "Statistic": "Average",
+                "Period": "300",
+                "EvaluationPeriods": "2",
+                "Threshold": "3500",
+                "AlarmActions": [
+                    {
+                        "Ref": "AlarmNotificationTopic"
+                    }
+                ],
+                "ComparisonOperator": "GreaterThanThreshold"
+            }
+        },
+        "AlarmNotificationTopic": {
+          "Type": "AWS::SNS::Topic",
+          "Properties": {
+            "Subscription": [
+                {
+                    "Endpoint": { "Ref": "OperatorEmail" },
+                    "Protocol": "email"
+                }
+             ]
+          }
+     },
     "myEC2InstanceForWeb": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
@@ -207,5 +347,40 @@
         "InstanceProfileName": "myInstanceProfileName"
       }
     }
-  }
+  },
+  "Outputs": {
+        "InstanceId": {
+            "Description": "InstanceId of the newly created EC2 instance",
+            "Value": {
+                "Ref": "EC2Instance"
+            }
+        },
+        "AZ": {
+            "Description": "Availability Zone of the newly created EC2 instance",
+            "Value": {
+                "Fn::GetAtt": [
+                    "EC2Instance",
+                    "AvailabilityZone"
+                ]
+            }
+        },
+        "PublicDNS": {
+            "Description": "Public DNSName of the newly created EC2 instance",
+            "Value": {
+                "Fn::GetAtt": [
+                    "EC2Instance",
+                    "PublicDnsName"
+                ]
+            }
+        },
+        "PublicIP": {
+            "Description": "Public IP address of the newly created EC2 instance",
+            "Value": {
+                "Fn::GetAtt": [
+                    "EC2Instance",
+                    "PublicIp"
+                ]
+            }
+        }
+    }
 }
