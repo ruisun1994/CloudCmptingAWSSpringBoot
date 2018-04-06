@@ -20,6 +20,7 @@
     "CloudWatch":{
       "Type": "AWS::IAM::Policy",
       "Properties": {
+        "Users" : ["csye6225_admin"],
         "PolicyName": "CloudWatch",
         "PolicyDocument": {
            "Version": "2012-10-17",
@@ -43,6 +44,7 @@
     "CodeDeployEC2S3": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
+        "Users" : ["csye6225_admin"],
         "PolicyName": "CodeDeploy-EC2-S3",
         "PolicyDocument": {
           "Version": "2012-10-17",
@@ -69,7 +71,7 @@
     "TravisUploadToS3": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "Users" : ["admin"],
+        "Users" : ["csye6225_admin"],
         "PolicyName": "Travis-Upload-To-S3",
         "PolicyDocument": {
           "Version": "2012-10-17",
@@ -90,7 +92,7 @@
     "TravisCodeDeploy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "Users" : ["admin"],
+        "Users" : ["csye6225_admin"],
         "PolicyName": "Travis-Code-Deploy",
         "PolicyDocument": {
           "Version": "2012-10-17",
