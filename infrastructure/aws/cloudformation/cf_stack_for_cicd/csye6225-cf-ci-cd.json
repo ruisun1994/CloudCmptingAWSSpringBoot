@@ -4,7 +4,7 @@
   "Parameters": {
     "S3BucketName": {
       "Type": "String",
-      "Default": "code-deploy.csye6225-spring2018-xueti.me",
+      "Default": "code-deploy.csye6225-spring2018-sunrui.me",
       "AllowedValues": [
         "code-deploy.csye6225-spring2018-sunrui.me",
         "code-deploy.csye6225-spring2018-xueti.me",
