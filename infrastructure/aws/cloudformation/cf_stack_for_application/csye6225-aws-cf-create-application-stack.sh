@@ -13,8 +13,11 @@ if
 	exit 0
 fi
 
+lambdaarn=$(aws lambda get-function --function-name "csye6225" --query "Configuration.FunctionArn" --output text)
+echo $lambdaarn
+
 echo "-------Start to build the cloudformation:"
-aws cloudformation create-stack --stack-name $stackname --template-body file://csye6225-cf-application.json --capabilities CAPABILITY_NAMED_IAM
+aws cloudformation create-stack --stack-name $stackname --template-body file://csye6225-cf-application.json --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=lambdaarn,ParameterValue=$lambdaarn
 
 echo "-------Check if the cloudformation has been done sucessfully!"
 stackStatus=$(aws cloudformation describe-stacks --stack-name $stackname --query 'Stacks[0].StackStatus' --output text)

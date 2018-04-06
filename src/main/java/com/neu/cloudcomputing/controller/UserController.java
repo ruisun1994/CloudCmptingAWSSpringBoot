@@ -290,8 +290,13 @@ public class UserController {
         return new ModelAndView("index");
     }
 
-    @GetMapping(value = "/forgotPassword")
-    public ModelAndView forgotPassword(HttpServletRequest request, HttpServletResponse response) {
+//    @GetMapping(value = "/forgotPassword")
+//    public ModelAndView forgotPassword(HttpServletRequest request, HttpServletResponse response) {
+//        return new ModelAndView("forgotPassword");
+//    }
+
+    @RequestMapping(value = "/forgotPassword")
+    public ModelAndView forgotPassword() {
         return new ModelAndView("forgotPassword");
     }
 

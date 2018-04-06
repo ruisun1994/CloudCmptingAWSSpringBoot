@@ -11,6 +11,9 @@
   },
   "Conditions": {},
   "Parameters": {
+    "lambdaarn": {
+      "Type": "String"
+    },
     "S3BucketName": {
       "Type": "String",
       "Default": "s3.csye6225-spring2018-sunrui.me",
@@ -197,6 +200,16 @@
         }
       }
     },
+   "MySNSTopic" : {
+        "Type" : "AWS::SNS::Topic",
+        "Properties" : {
+          "Subscription" : [{
+              "Endpoint" : { "Ref": "lambdaarn" },
+              "Protocol" : "lambda"
+          }],
+          "TopicName" : "password_reset"
+        }
+   },
     "myInstanceProfile": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
