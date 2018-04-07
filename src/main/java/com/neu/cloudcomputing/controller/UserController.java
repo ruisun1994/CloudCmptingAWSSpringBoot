@@ -308,7 +308,7 @@ public class UserController {
         String topicArn = snsClient.createTopic("password_reset").getTopicArn();
         PublishRequest publishRequest = new PublishRequest(topicArn, msg);
         PublishResult publicResult = snsClient.publish(publishRequest);
-        return new ModelAndView("index");
+        return new ModelAndView("forgotPassword");
     }
 
 }
