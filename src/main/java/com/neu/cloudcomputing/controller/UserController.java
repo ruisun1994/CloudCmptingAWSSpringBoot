@@ -300,7 +300,7 @@ public class UserController {
         return new ModelAndView("forgotPassword");
     }
 
-    @RequestMapping(value = "/resetPassword", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/resetPassword")
     public ModelAndView resetPassword(HttpSession session, @RequestParam("email") String email){
         //create a new SNS client and set endpoint
         AmazonSNS snsClient = AmazonSNSClientBuilder.defaultClient();
