@@ -204,7 +204,8 @@
         "Path": "/",
         "ManagedPolicyArns": [
           "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-          "arn:aws:iam::aws:policy/AdministratorAccess"
+          "arn:aws:iam::aws:policy/AdministratorAccess",
+          "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
         ],
         "RoleName": "CodeDeployEC2ServiceRole"
       }
