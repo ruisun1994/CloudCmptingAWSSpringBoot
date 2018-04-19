@@ -305,7 +305,7 @@
     "CodeDeploymentGroup": {
       "Type": "AWS::CodeDeploy::DeploymentGroup",
       "Properties": {
-        "ApplicationName": "csye6225-spring2018-codedeploy",
+        "ApplicationName": "csye6225-application",
         "DeploymentConfigName": "CodeDeployDefault.AllAtOnce",
         "DeploymentGroupName": "csye6225-spring2018-codedeploy",
         "DeploymentStyle": {

@@ -46,9 +46,6 @@
     "ImageId": {
       "Type": "String"
     },
-    "InstanceType": {
-      "Type": "String"
-    },
     "CoolDown": {
       "Type": "String"
     },
@@ -61,9 +58,15 @@
     "DesiredCapacity": {
       "Type": "String"
     },
-    "DomainName": {
-      "Type": "String"
-    }
+    "WebPolicy" : {
+    "Type" : "String"
+    },
+    "InstanceType" : {
+    "Type" : "String"
+  },
+  "DomainName" : {
+  "Type" : "String"
+  }
   },
   "Resources": {
     "LaunchConfig": {
@@ -77,7 +80,7 @@
         "InstanceType": {
           "Ref": "InstanceType"
         },
-        "KeyName": "Nenghui",
+        "KeyName": "csye6225",
         "SecurityGroups": [
           {
             "Ref": "WebPolicy"
@@ -330,7 +333,7 @@
         "Protocol": "HTTPS",
         "Certificates": [
           {
-            "CertificateArn": "arn:aws:acm:us-east-1:204114308736:certificate/9e5fcd1c-e6ff-4d88-9739-cebc88cf5cde"
+            "CertificateArn": "arn:aws:acm:us-east-1:893334075795:certificate/e94c6134-40a4-4283-931a-426025a93f5f"
           }
         ]
       }
@@ -395,14 +398,6 @@
         "TimeToLiveSpecification": {
           "AttributeName": "ttl",
           "Enabled": "true"
-        }
-      }
-    },
-    "RecordServiceS3Bucket": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketName": {
-          "Ref": "S3BucketName"
         }
       }
     },

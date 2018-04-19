@@ -92,7 +92,7 @@
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": {
-          "Ref": "BabyVPC"
+          "Ref": "myVPC"
         },
         "CidrBlock": "10.0.3.0/24",
         "MapPublicIpOnLaunch": "true",
@@ -103,7 +103,7 @@
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": {
-          "Ref": "BabyVPC"
+          "Ref": "myVPC"
         },
         "CidrBlock": "10.0.4.0/24",
         "MapPublicIpOnLaunch": "true",
@@ -127,6 +127,54 @@
                     "Ref": "AWS::StackName"
                   },
                   "-csye6225-private-route-table"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "PublicRouteTable2": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "myVPC"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "-csye6225-public-route-table"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "PublicRouteTable3": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "myVPC"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "-csye6225-public-route-table3"
                 ]
               ]
             }
@@ -159,11 +207,11 @@
       }
     },
     "PublicRoute2": {
-      "DependsOn": "AttachGateway",
+      "DependsOn": "myAttachGateway",
       "Type": "AWS::EC2::Route",
       "Properties": {
         "GatewayId": {
-          "Ref": "InternetGateway"
+          "Ref": "myInternetGateway"
         },
         "DestinationCidrBlock": "0.0.0.0/0",
         "RouteTableId": {
@@ -172,11 +220,11 @@
       }
     },
     "PublicRoute3": {
-      "DependsOn": "AttachGateway",
+      "DependsOn": "myAttachGateway",
       "Type": "AWS::EC2::Route",
       "Properties": {
         "GatewayId": {
-          "Ref": "InternetGateway"
+          "Ref": "myInternetGateway"
         },
         "DestinationCidrBlock": "0.0.0.0/0",
         "RouteTableId": {
@@ -232,6 +280,7 @@
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupName": "csye6225-webapp",
+        "Tags" :  [{"Key" : "Web", "Value" : "web"}],
         "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22, HTTPS access via port 443",
         "VpcId": {
           "Ref": "myVPC"
@@ -355,6 +404,20 @@
       "Export": {
         "Name": {
           "Fn::Sub": "${AWS::StackName}-Subnet2ID"
+        }
+      }
+    },
+    "LoadBalancerSecurityGroup": {
+      "Description": "The security group for LoadBalancers",
+      "Value": {
+        "Fn::GetAtt": [
+          "LoadBalancerSecurityGroup",
+          "GroupId"
+        ]
+      },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-LoadBalancerGroup"
         }
       }
     },
