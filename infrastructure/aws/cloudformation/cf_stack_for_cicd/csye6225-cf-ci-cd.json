@@ -314,9 +314,9 @@
         },
         "Ec2TagFilters": [
           {
-            "Key": "Name",
+            "Key": "deploy",
             "Type": "KEY_AND_VALUE",
-            "Value": "app-csye6225-ec2instanceforweb"
+            "Value": "deploy"
           }
         ],
         "ServiceRoleArn": {
