@@ -16,6 +16,8 @@
       "Type": "AWS::EC2::VPC",
       "Properties": {
         "CidrBlock": "10.0.0.0/16",
+        "EnableDnsSupport": "true",
+        "EnableDnsHostnames": "true",
         "Tags": [
           {
             "Key": "Name",
@@ -86,6 +88,28 @@
         }
       }
     },
+    "PublicSubnet2": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "myVPC"
+        },
+        "CidrBlock": "10.0.3.0/24",
+        "MapPublicIpOnLaunch": "true",
+        "AvailabilityZone": "us-east-1c"
+      }
+    },
+    "PublicSubnet3": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "myVPC"
+        },
+        "CidrBlock": "10.0.4.0/24",
+        "MapPublicIpOnLaunch": "true",
+        "AvailabilityZone": "us-east-1d"
+      }
+    },
     "myPrivateRouteTable": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
@@ -103,6 +127,54 @@
                     "Ref": "AWS::StackName"
                   },
                   "-csye6225-private-route-table"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "PublicRouteTable2": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "myVPC"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "-csye6225-public-route-table"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "PublicRouteTable3": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "myVPC"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "-csye6225-public-route-table3"
                 ]
               ]
             }
@@ -134,6 +206,32 @@
         ]
       }
     },
+    "PublicRoute2": {
+      "DependsOn": "myAttachGateway",
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "GatewayId": {
+          "Ref": "myInternetGateway"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "RouteTableId": {
+          "Ref": "PublicRouteTable2"
+        }
+      }
+    },
+    "PublicRoute3": {
+      "DependsOn": "myAttachGateway",
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "GatewayId": {
+          "Ref": "myInternetGateway"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "RouteTableId": {
+          "Ref": "PublicRouteTable3"
+        }
+      }
+    },
     "mySubnet1PublicRouteTableAssociation": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
       "Properties": {
@@ -156,10 +254,33 @@
         }
       }
     },
+    "SubnetRouteTableAssociation3": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PublicSubnet2"
+        },
+        "RouteTableId": {
+          "Ref": "PublicRouteTable2"
+        }
+      }
+    },
+    "SubnetRouteTableAssociation4": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PublicSubnet3"
+        },
+        "RouteTableId": {
+          "Ref": "PublicRouteTable3"
+        }
+      }
+    },
     "EC2SecurityGroupForWeb": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupName": "csye6225-webapp",
+        "Tags" :  [{"Key" : "Web", "Value" : "web"}],
         "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22, HTTPS access via port 443",
         "VpcId": {
           "Ref": "myVPC"
@@ -204,7 +325,9 @@
             "IpProtocol": "tcp",
             "FromPort": "3306",
             "ToPort": "3306",
-            "SourceSecurityGroupId" : {"Ref":"EC2SecurityGroupForWeb"}
+            "SourceSecurityGroupId": {
+              "Ref": "EC2SecurityGroupForWeb"
+            }
           }
         ]
       }
@@ -223,28 +346,6 @@
         ]
       }
     },
-    "myDynamoDBTable": {
-      "Type": "AWS::DynamoDB::Table",
-      "Properties": {
-        "TableName": "csye6225",
-        "AttributeDefinitions": [
-          {
-            "AttributeName": "id",
-            "AttributeType": "S"
-          }
-        ],
-        "ProvisionedThroughput": {
-          "ReadCapacityUnits": 5,
-          "WriteCapacityUnits": 5
-        },
-        "KeySchema": [
-          {
-            "AttributeName": "id",
-            "KeyType": "HASH"
-          }
-        ]
-      }
-    },
     "myWebServerRoute": {
       "Type": "AWS::EC2::Route",
       "DependsOn": "myAttachGateway",
@@ -257,6 +358,30 @@
           "Ref": "myInternetGateway"
         }
       }
+    },
+    "LoadBalancerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "loadbalancer",
+            "Value": "loadbalancer"
+          }
+        ],
+        "GroupName": "csye6225-loadbalancergroup",
+        "GroupDescription": "Enable HTTPs access via port 443",
+        "VpcId": {
+          "Ref": "myVPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "443",
+            "ToPort": "443",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
     }
   },
   "Outputs": {
@@ -265,35 +390,75 @@
       "Value": {
         "Ref": "mySubnet1"
       },
-      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-Subnet1ID" }}
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-Subnet1ID"
+        }
+      }
     },
     "mySubnet2": {
       "Description": "Subnet2 Id",
       "Value": {
         "Ref": "mySubnet2"
       },
-      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-Subnet2ID" }}
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-Subnet2ID"
+        }
+      }
+    },
+    "LoadBalancerSecurityGroup": {
+      "Description": "The security group for LoadBalancers",
+      "Value": {
+        "Fn::GetAtt": [
+          "LoadBalancerSecurityGroup",
+          "GroupId"
+        ]
+      },
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-LoadBalancerGroup"
+        }
+      }
     },
     "EC2SecurityGroupForWeb": {
       "Description": "The security group ID to use for public web servers",
       "Value": {
-        "Fn::GetAtt" : ["EC2SecurityGroupForWeb", "GroupId"]
+        "Fn::GetAtt": [
+          "EC2SecurityGroupForWeb",
+          "GroupId"
+        ]
       },
-      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-SecurityGroupForWebID" }}
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-SecurityGroupForWebID"
+        }
+      }
     },
     "dbSecurityGroup": {
       "Description": "dbSecurityGroup Id",
       "Value": {
-        "Fn::GetAtt" : ["dbSecurityGroup", "GroupId"]
+        "Fn::GetAtt": [
+          "dbSecurityGroup",
+          "GroupId"
+        ]
       },
-      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-dbSecurityGroupID" }}
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-dbSecurityGroupID"
+        }
+      }
     },
     "myDBSubnetGroup": {
       "Description": "myDBSubnetGroup Id",
       "Value": {
         "Ref": "myDBSubnetGroup"
       },
-      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-myDBSubnetGroupID" }}
+      "Export": {
+        "Name": {
+          "Fn::Sub": "${AWS::StackName}-myDBSubnetGroupID"
+        }
+      }
     }
   }
 }

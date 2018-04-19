@@ -290,20 +290,25 @@ public class UserController {
         return new ModelAndView("index");
     }
 
-    @GetMapping(value = "/forgotPassword")
-    public ModelAndView forgotPassword(HttpServletRequest request, HttpServletResponse response) {
+//    @GetMapping(value = "/forgotPassword")
+//    public ModelAndView forgotPassword(HttpServletRequest request, HttpServletResponse response) {
+//        return new ModelAndView("forgotPassword");
+//    }
+
+    @RequestMapping(value = "/forgotPassword")
+    public ModelAndView forgotPassword() {
         return new ModelAndView("forgotPassword");
     }
 
-    @RequestMapping(value = "/resetPassword", method = {RequestMethod.GET, RequestMethod.POST})
-    public ModelAndView forgetPassword(HttpSession session, @RequestParam("email") String email){
+    @RequestMapping(value = "/resetPassword")
+    public ModelAndView resetPassword(HttpSession session, @RequestParam("email") String email){
         //create a new SNS client and set endpoint
         AmazonSNS snsClient = AmazonSNSClientBuilder.defaultClient();
         String msg = email;
-        String topicArn = snsClient.createTopic("password reset").getTopicArn();
+        String topicArn = snsClient.createTopic("password_reset").getTopicArn();
         PublishRequest publishRequest = new PublishRequest(topicArn, msg);
         PublishResult publicResult = snsClient.publish(publishRequest);
-        return new ModelAndView("index");
+        return new ModelAndView("forgotPassword");
     }
 
 }

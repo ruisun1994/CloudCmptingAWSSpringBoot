@@ -4,7 +4,7 @@
   "Parameters": {
     "S3BucketName": {
       "Type": "String",
-      "Default": "code-deploy.csye6225-spring2018-xueti.me",
+      "Default": "code-deploy.csye6225-spring2018-sunrui.me",
       "AllowedValues": [
         "code-deploy.csye6225-spring2018-sunrui.me",
         "code-deploy.csye6225-spring2018-xueti.me",
@@ -17,32 +17,38 @@
     }
   },
   "Resources": {
-    "CloudWatch":{
+    "CloudWatch": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
+        "Users": [
+          "csye6225_admin"
+        ],
         "PolicyName": "CloudWatch",
         "PolicyDocument": {
-           "Version": "2012-10-17",
-           "Statement": [
+          "Version": "2012-10-17",
+          "Statement": [
             {
-             "Effect": "Allow",
-             "Action": [
+              "Effect": "Allow",
+              "Action": [
                 "logs:CreateLogGroup",
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
                 "logs:DescribeLogStreams"
-            ],
-            "Resource": [
+              ],
+              "Resource": [
                 "arn:aws:logs:*:*:*"
-            ]
-           }
+              ]
+            }
           ]
-         }
-       }
+        }
+      }
     },
     "CodeDeployEC2S3": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
+        "Users": [
+          "csye6225_admin"
+        ],
         "PolicyName": "CodeDeploy-EC2-S3",
         "PolicyDocument": {
           "Version": "2012-10-17",
@@ -69,7 +75,9 @@
     "TravisUploadToS3": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "Users" : ["admin"],
+        "Users": [
+          "csye6225_admin"
+        ],
         "PolicyName": "Travis-Upload-To-S3",
         "PolicyDocument": {
           "Version": "2012-10-17",
@@ -90,7 +98,9 @@
     "TravisCodeDeploy": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "Users" : ["admin"],
+        "Users": [
+          "csye6225_admin"
+        ],
         "PolicyName": "Travis-Code-Deploy",
         "PolicyDocument": {
           "Version": "2012-10-17",
@@ -236,7 +246,7 @@
     "CodeDeployApplication": {
       "Type": "AWS::CodeDeploy::Application",
       "Properties": {
-        "ApplicationName" : {
+        "ApplicationName": {
           "Ref": "ApplicationName"
         }
       }
@@ -278,6 +288,43 @@
             "Ref": "LambdaSnsExecutionRole"
           }
         ]
+      }
+    },
+    "ec2instanceprofile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {
+            "Ref": "CodeDeployEC2ServiceRole"
+          }
+        ],
+        "InstanceProfileName": "ec2profile"
+      }
+    },
+    "CodeDeploymentGroup": {
+      "Type": "AWS::CodeDeploy::DeploymentGroup",
+      "Properties": {
+        "ApplicationName": "csye6225-application",
+        "DeploymentConfigName": "CodeDeployDefault.AllAtOnce",
+        "DeploymentGroupName": "csye6225-spring2018-codedeploy",
+        "DeploymentStyle": {
+          "DeploymentOption": "WITHOUT_TRAFFIC_CONTROL",
+          "DeploymentType": "IN_PLACE"
+        },
+        "Ec2TagFilters": [
+          {
+            "Key": "deploy",
+            "Type": "KEY_AND_VALUE",
+            "Value": "deploy"
+          }
+        ],
+        "ServiceRoleArn": {
+          "Fn::GetAtt": [
+            "CodeDeployServiceRole",
+            "Arn"
+          ]
+        }
       }
     }
   }

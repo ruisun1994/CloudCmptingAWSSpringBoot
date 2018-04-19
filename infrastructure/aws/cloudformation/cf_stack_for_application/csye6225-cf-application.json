@@ -11,9 +11,12 @@
   },
   "Conditions": {},
   "Parameters": {
+    "lambdaarn": {
+      "Type": "String"
+    },
     "S3BucketName": {
       "Type": "String",
-      "Default": "s3.csye6225-spring2018-xueti.me",
+      "Default": "s3.csye6225-spring2018-sunrui.me",
       "AllowedValues": [
         "s3.csye6225-spring2018-sunrui.me",
         "s3.csye6225-spring2018-xueti.me",
@@ -24,201 +27,65 @@
       "Description": "Name of an existing EC2 key pair for SSH access to the EC2 instance.",
       "Type": "AWS::EC2::KeyPair::KeyName",
       "Default": "csye6225"
-    }
+    },
+    "Subnet1": {
+      "Type": "String"
+    },
+    "Subnet2": {
+      "Type": "String"
+    },
+    "Subnet3": {
+      "Type": "String"
+    },
+    "LoadBalancerPolicy": {
+      "Type": "String"
+    },
+    "VpcId": {
+      "Type": "String"
+    },
+    "ImageId": {
+      "Type": "String"
+    },
+    "CoolDown": {
+      "Type": "String"
+    },
+    "MinSize": {
+      "Type": "String"
+    },
+    "MaxSize": {
+      "Type": "String"
+    },
+    "DesiredCapacity": {
+      "Type": "String"
+    },
+    "WebPolicy" : {
+    "Type" : "String"
+    },
+    "InstanceType" : {
+    "Type" : "String"
+  },
+  "DomainName" : {
+  "Type" : "String"
+  }
   },
   "Resources": {
-    "LogRole": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "AssumeRolePolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": {
-                                "Service": [
-                                    "ec2.amazonaws.com"
-                                ]
-                            },
-                            "Action": [
-                                "sts:AssumeRole"
-                            ]
-                        }
-                    ]
-                },
-                "Path": "/",
-                "Policies": [
-                    {
-                        "PolicyName": "LogRolePolicy",
-                        "PolicyDocument": {
-                            "Version": "2012-10-17",
-                            "Statement": [
-                                {
-                                    "Effect": "Allow",
-                                    "Action": [
-                                      "logs:Create*",
-                                      "logs:PutLogEvents",
-                                      "s3:GetObject"
-                                    ],     
-                                    "Resource": [
-                                        "arn:aws:logs:*:*:*",
-                                        "arn:aws:s3:::*"
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
-     },
-    "LogRoleInstanceProfile": {
-            "Type": "AWS::IAM::InstanceProfile",
-            "Properties": {
-                "Path": "/",
-                "Roles": [
-                    {
-                        "Ref": "LogRole"
-                    }
-                ]
-            }
-     },
-     "WebServerLogGroup": {
-            "Type": "AWS::Logs::LogGroup",
-            "Properties": {
-                "RetentionInDays": 7
-            }
-      },
-      "404MetricFilter": {
-            "Type": "AWS::Logs::MetricFilter",
-            "Properties": {
-                "LogGroupName": {
-                    "Ref": "WebServerLogGroup"
-                },
-                "FilterPattern": "[ip, identity, user_id, timestamp, request, status_code = 404, size, ...]",
-                "MetricTransformations": [
-                    {
-                        "MetricValue": "1",
-                        "MetricNamespace": "test/404s",
-                        "MetricName": "test404Count"
-                    }
-                ]
-            }
-       },
-       "BytesTransferredMetricFilter": {
-            "Type": "AWS::Logs::MetricFilter",
-            "Properties": {
-                "LogGroupName": {
-                    "Ref": "WebServerLogGroup"
-                },
-                "FilterPattern": "[ip, identity, user_id, timestamp, request, status_code, size, ...]",
-                "MetricTransformations": [
-                    {
-                        "MetricValue": "$size",
-                        "MetricNamespace": "test/BytesTransferred",
-                        "MetricName": "testBytesTransferred"
-                    }
-                ]
-            }
-       },
-       "404Alarm": {
-            "Type": "AWS::CloudWatch::Alarm",
-            "Properties": {
-                "AlarmDescription": "The number of 404s is greater than 2 over 2 minutes",
-                "MetricName": "test404Count",
-                "Namespace": "test/404s",
-                "Statistic": "Sum",
-                "Period": "60",
-                "EvaluationPeriods": "2",
-                "Threshold": "2",
-                "AlarmActions": [
-                    {
-                        "Ref": "AlarmNotificationTopic"
-                    }
-                ],
-                "ComparisonOperator": "GreaterThanThreshold"
-            }
-       },
-       "BandwidthAlarm": {
-            "Type": "AWS::CloudWatch::Alarm",
-            "Properties": {
-                "AlarmDescription": "The average volume of traffic is greater 3500 KB over 10 minutes",
-                "MetricName": "testBytesTransferred",
-                "Namespace": "test/BytesTransferred",
-                "Statistic": "Average",
-                "Period": "300",
-                "EvaluationPeriods": "2",
-                "Threshold": "3500",
-                "AlarmActions": [
-                    {
-                        "Ref": "AlarmNotificationTopic"
-                    }
-                ],
-                "ComparisonOperator": "GreaterThanThreshold"
-            }
-        },
-        "AlarmNotificationTopic": {
-          "Type": "AWS::SNS::Topic",
-          "Properties": {
-            "Subscription": [
-                {
-                    "Endpoint": { "Ref": "OperatorEmail" },
-                    "Protocol": "email"
-                }
-             ]
-          }
-     },
-    "myEC2InstanceForWeb": {
-      "Type": "AWS::EC2::Instance",
+    "LaunchConfig": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
       "Properties": {
-        "ImageId": "ami-66506c1c",
-        "InstanceType": "t2.micro",
-        "NetworkInterfaces": [
-          {
-            "GroupSet": [
-              {
-                "Fn::ImportValue": "networking-SecurityGroupForWebID"
-              }
-            ],
-            "AssociatePublicIpAddress": "true",
-            "DeviceIndex": "0",
-            "DeleteOnTermination": "true",
-            "SubnetId": {
-              "Fn::ImportValue": "networking-Subnet1ID"
-            }
-          }
-        ],
-        "BlockDeviceMappings": [
-          {
-            "DeviceName": "/dev/sda1",
-            "Ebs": {
-              "VolumeType": "gp2",
-              "VolumeSize": "16",
-              "DeleteOnTermination": "false"
-            }
-          }
-        ],
-        "IamInstanceProfile": {
-          "Ref": "myInstanceProfile"
+        "AssociatePublicIpAddress": "true",
+        "IamInstanceProfile": "ec2profile",
+        "ImageId": {
+          "Ref": "ImageId"
         },
-        "Tags": [
+        "InstanceType": {
+          "Ref": "InstanceType"
+        },
+        "KeyName": "csye6225",
+        "SecurityGroups": [
           {
-            "Key": "Name",
-            "Value": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Ref": "AWS::StackName"
-                  },
-                  "-csye6225-ec2instanceforweb"
-                ]
-              ]
-            }
+            "Ref": "WebPolicy"
           }
         ],
-        "KeyName": {
-          "Ref": "EC2ForWebKeyName"
-        },
         "UserData": {
           "Fn::Base64": {
             "Fn::Join": [
@@ -299,6 +166,241 @@
         }
       }
     },
+    "InstanceAutoScalinGroup": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "Cooldown": {
+          "Ref": "CoolDown"
+        },
+        "DesiredCapacity": {
+          "Ref": "DesiredCapacity"
+        },
+        "LaunchConfigurationName": {
+          "Ref": "LaunchConfig"
+        },
+        "MaxSize": {
+          "Ref": "MaxSize"
+        },
+        "MinSize": {
+          "Ref": "MinSize"
+        },
+        "TargetGroupARNs": [
+          {
+            "Ref": "HttpTargetGroup"
+          }
+        ],
+        "VPCZoneIdentifier": [
+          {
+            "Ref": "Subnet1"
+          },
+          {
+            "Ref": "Subnet2"
+          },
+          {
+            "Ref": "Subnet3"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "deploy",
+            "Value": "deploy",
+            "PropagateAtLaunch": "true"
+          }
+        ]
+      }
+    },
+    "WebServerScaleUpPolicy": {
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+      "Properties": {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": {
+          "Ref": "InstanceAutoScalinGroup"
+        },
+        "Cooldown": {
+          "Ref": "CoolDown"
+        },
+        "ScalingAdjustment": "1"
+      }
+    },
+    "WebServerScaleDownPolicy": {
+      "Type": "AWS::AutoScaling::ScalingPolicy",
+      "Properties": {
+        "AdjustmentType": "ChangeInCapacity",
+        "AutoScalingGroupName": {
+          "Ref": "InstanceAutoScalinGroup"
+        },
+        "Cooldown": {
+          "Ref": "CoolDown"
+        },
+        "ScalingAdjustment": "-1"
+      }
+    },
+    "CPUAlarmHigh": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmDescription": "Scale-up if CPU > 90% for 10 minutes",
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Statistic": "Average",
+        "Period": "300",
+        "EvaluationPeriods": "2",
+        "Threshold": "90",
+        "AlarmActions": [
+          {
+            "Ref": "WebServerScaleUpPolicy"
+          }
+        ],
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": {
+              "Ref": "InstanceAutoScalinGroup"
+            }
+          }
+        ],
+        "ComparisonOperator": "GreaterThanThreshold"
+      }
+    },
+    "CPUAlarmLow": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmDescription": "Scale-down if CPU < 70% for 10 minutes",
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Statistic": "Average",
+        "Period": "300",
+        "EvaluationPeriods": "2",
+        "Threshold": "70",
+        "AlarmActions": [
+          {
+            "Ref": "WebServerScaleDownPolicy"
+          }
+        ],
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": {
+              "Ref": "InstanceAutoScalinGroup"
+            }
+          }
+        ],
+        "ComparisonOperator": "LessThanThreshold"
+      }
+    },
+    "loadBalancer": {
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "Properties": {
+        "Scheme": "internet-facing",
+        "SecurityGroups": [
+          {
+            "Ref": "LoadBalancerPolicy"
+          }
+        ],
+        "Subnets": [
+          {
+            "Ref": "Subnet1"
+          },
+          {
+            "Ref": "Subnet2"
+          },
+          {
+            "Ref": "Subnet3"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "loadbalancer",
+            "Value": "loadbalancer"
+          }
+        ]
+      }
+    },
+    "ListenerToTarget": {
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties": {
+        "DefaultActions": [
+          {
+            "Type": "forward",
+            "TargetGroupArn": {
+              "Ref": "HttpTargetGroup"
+            }
+          }
+        ],
+        "LoadBalancerArn": {
+          "Ref": "loadBalancer"
+        },
+        "Port": "443",
+        "Protocol": "HTTPS",
+        "Certificates": [
+          {
+            "CertificateArn": "arn:aws:acm:us-east-1:893334075795:certificate/e94c6134-40a4-4283-931a-426025a93f5f"
+          }
+        ]
+      }
+    },
+    "HttpTargetGroup": {
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties": {
+        "Name": "httptest",
+        "Port": "8080",
+        "Protocol": "HTTP",
+        "VpcId": {
+          "Ref": "VpcId"
+        }
+      }
+    },
+    "Route53Domain": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "AliasTarget": {
+          "DNSName": {
+            "Fn::GetAtt": [
+              "loadBalancer",
+              "DNSName"
+            ]
+          },
+          "HostedZoneId": {
+            "Fn::GetAtt": [
+              "loadBalancer",
+              "CanonicalHostedZoneID"
+            ]
+          }
+        },
+        "Name": {
+          "Ref": "DomainName"
+        },
+        "HostedZoneName": {
+          "Ref": "DomainName"
+        },
+        "Type": "A"
+      }
+    },
+    "myDynamoDBTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "5",
+          "WriteCapacityUnits": "5"
+        },
+        "TableName": "csye6225",
+        "TimeToLiveSpecification": {
+          "AttributeName": "ttl",
+          "Enabled": "true"
+        }
+      }
+    },
     "myRDSInstance": {
       "Type": "AWS::RDS::DBInstance",
       "Properties": {
@@ -337,6 +439,20 @@
         }
       }
     },
+    "MySNSTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "Subscription": [
+          {
+            "Endpoint": {
+              "Ref": "lambdaarn"
+            },
+            "Protocol": "lambda"
+          }
+        ],
+        "TopicName": "password_reset"
+      }
+    },
     "myInstanceProfile": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
@@ -347,40 +463,5 @@
         "InstanceProfileName": "myInstanceProfileName"
       }
     }
-  },
-  "Outputs": {
-        "InstanceId": {
-            "Description": "InstanceId of the newly created EC2 instance",
-            "Value": {
-                "Ref": "EC2Instance"
-            }
-        },
-        "AZ": {
-            "Description": "Availability Zone of the newly created EC2 instance",
-            "Value": {
-                "Fn::GetAtt": [
-                    "EC2Instance",
-                    "AvailabilityZone"
-                ]
-            }
-        },
-        "PublicDNS": {
-            "Description": "Public DNSName of the newly created EC2 instance",
-            "Value": {
-                "Fn::GetAtt": [
-                    "EC2Instance",
-                    "PublicDnsName"
-                ]
-            }
-        },
-        "PublicIP": {
-            "Description": "Public IP address of the newly created EC2 instance",
-            "Value": {
-                "Fn::GetAtt": [
-                    "EC2Instance",
-                    "PublicIp"
-                ]
-            }
-        }
-    }
+  }
 }
