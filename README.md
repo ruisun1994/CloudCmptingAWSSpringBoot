@@ -8,16 +8,17 @@ Yi Chai, chai.yi@northeastern.edu
 
 Tianjiao, Xue xue.ti@northeastern.edu
 ````
-#### Prerequisite for building and deploying application locally
+#### Prerequisite for building and deploying application locally∏
 ````
 1, Our local application is built on Ubuntu 16.04 LTS. Please make sure if you run it on virtual machine which enough RAM (4GB), CPU (1-2) and disk(50GB).
-2, Please install Java 8, MySQL on your Ubuntu development virtual machine.
+2, Please instalÂÂl Java 8, MySQL on your Ubuntu development virtual machine.
 3, You can use IntelliJ as IDE as you want.
 ````
 #### Build and deploy for application
 ````
 1, Build and deploy for application
 2, We use Persistent database (MySQL) connected by Hibernate
+![](./imgs/cicd.png)
 
 ````
 #### Unit, integration and load test
